@@ -77,12 +77,3 @@ module.exports.deleteUni=function(req,res)
 }
 
 
-
-
-// entity.find({tier: 3}, function (err, result) {
-//   if (err)
-//     throw err;
-
-//   res.render('HEC/ListOfUniversities', {
-//     result
-//   });
