@@ -58,8 +58,7 @@ const InitialCredentialUpdate = function (req, res, next) {
     res.redirect('/');
     if (req.session.Activity != 1)
       res.redirect('/Institute/Dashboard');
-  }
-  else
+  } else
     next();
 }
 
@@ -166,7 +165,7 @@ router.post('/SetPassword', checkIfInstituteTier, Institute.setPassword);
 
 router.post('/sendEmail', checkIfInstituteTier, Institute.sendEmail);
 
-router.patch('/UpdatePublicKey/:id/:pkey', checkIfInstituteTier, Institute.UpdatePublicKey);
+router.patch('/UpdatePublicKey/:id/:email/:pkey', Institute.UpdatePublicKey);
 
 router.get('/GetCertificate/:pkey', checkIfInstituteTier, Institute.GetCertificates);
 

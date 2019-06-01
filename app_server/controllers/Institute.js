@@ -7,19 +7,39 @@ var XLSX = require('xlsx')
 var recepient = require('../models/recepient');
 var student = require('../models/student_info');
 var nodemailer = require('nodemailer');
-
+const uuidv4 = require('uuid/v4');
 var blockchain = require('../controllers/BlockChain')
 
 
 module.exports.UpdatePublicKey = function (req, res) {
     const id = req.params.id;
     const pkey = req.params.pkey;
+    const email = req.params.email;
+    // console.log("id", id);
+    // console.log("pkey", pkey);
+    // console.log("email", email);
 
-    console.log("id", id);
-    console.log("pkey", pkey);
+    student.updateOne({
+        'data.id': id
+    }, {
+        '$set': {
+            'data.$.pkey': pkey,
+        }
+    }, (err, result) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        } else {
+            console.log("Result---->", result);
+            console.log("Public Key Updated");
+        }
+    })
 
 
-    res.send(200)
+
+    temp = {};
+    temp['response'] = "Ok";
+    res.send(temp)
 }
 
 
@@ -131,35 +151,24 @@ module.exports.uploadRecepient = function (req, res) {
     xlData.forEach((row) => {
         var temp = uuidv4();;
         row['id'] = temp
-        bcrypt.hash(temp, 10, function (err, hash) {
-            if (err) {
-                console.log(err);
-                throw err;
-            } else {
-                row['password'] = hash;
-                console.log(xlData);
-
-
-                let studentInfo = new student({
-                    data: xlData,
-                    InstituteID: req.session.uid,
-                    Name: req.file.filename.slice(0, -5)
-                });
-
-                studentInfo.save(function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        throw err;
-                    } else {
-                        console.log("student info added");
-
-                    }
-                });
-
-
-            }
-        });
+        row['pkey'] = ""
     })
+
+    let studentInfo = new student({
+        data: xlData,
+        InstituteID: req.session.uid,
+        Name: req.file.filename.slice(0, -5)
+    });
+
+    studentInfo.save(function (err, result) {
+        if (err) {
+            console.log(err);
+            throw err;
+        } else {
+            console.log("student info added");
+
+        }
+    });
 
     // Storing Recepient's Data in Recepient Table 
 
@@ -256,6 +265,9 @@ module.exports.IssueCertificates = function (req, res) {
 module.exports.sendEmail = function (req, res) {
     console.log("Send Email!");
     var emails = [];
+    var studentId = [];
+    var name = [];
+
     student.find({
         InstituteID: req.session.uid
     }, {
@@ -265,15 +277,28 @@ module.exports.sendEmail = function (req, res) {
         data_arr = arr.map(function (u) {
             return u.data;
         });
+
+        console.log(data_arr);
+
         for (i = 0; i < data_arr.length; i++) {
             for (j = 0; j < data_arr[i].length; j++) {
                 emails.push(data_arr[i][j].Email);
+                studentId.push(data_arr[i][j].id);
+                name.push(data_arr[i][j].Recepient);
+
             }
         }
         if (emails.length == 0) {
             console.log("No recipients found for sending Invites!");
             return;
         }
+
+        console.log("Student id ->", studentId)
+        console.log("Student email ->", emails)
+
+        console.log("=========================")
+
+
         email_str = emails.toString();
         console.log(email_str);
 
@@ -285,20 +310,29 @@ module.exports.sendEmail = function (req, res) {
             }
         });
 
-        var mailOptions = {
-            from: 'edcertsweb@gmail.com',
-            to: email_str,
-            subject: 'Invitation for receiving certificate | Edcerts',
-            text: 'Dear user,\n\nYou have been sent an invitation to add the institute XYZ in Edcerts application. This will allow you to receive certificate from the institute. Please click on the below link to continue:\n\nhttps://edcert.herokuapp.com \n\nRegards,\nTeam Edcerts'
-        };
 
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
+
+        emails.forEach((e, index) => {
+
+            var mailOptions = {
+                from: 'edcertsweb@gmail.com',
+                to: e,
+                subject: 'Invitation for receiving certificate | Edcerts',
+                text: 'Dear ' + name[index] + '\n\nYou have been sent an invitation to add the ' + req.session.name + ' in Edcerts application. This will allow you to receive certificate from the institute. Your institute id is ' + req.session.uid + '\nPlease click on the below link to continue:\n\n https://edcert.herokuapp.com/UpdatePublicKey/' + studentId[index] + ' \n\nRegards,\nTeam Edcerts'
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+
         });
+
+
+
     });
 
     res.redirect('/Institute/Recipients')
