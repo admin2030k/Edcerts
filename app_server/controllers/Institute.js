@@ -8,47 +8,47 @@ var recepient = require('../models/recepient');
 var student = require('../models/student_info');
 var nodemailer = require('nodemailer');
 
-var blockchain=require('../controllers/BlockChain')
+var blockchain = require('../controllers/BlockChain')
 
 
-module.exports.UpdatePublicKey=function(req,res)
-{
+module.exports.UpdatePublicKey = function (req, res) {
     const id = req.params.id;
-    const pkey=req.params.pkey;
+    const pkey = req.params.pkey;
 
-    console.log("id",id);
-    console.log("pkey",pkey);
-    
+    console.log("id", id);
+    console.log("pkey", pkey);
+
 
     res.send(200)
 }
 
 
-module.exports.GetCertificates=function(req,res)
-{
-    
-    const pkey=req.params.pkey;
-    console.log("get certificate called");   
-    console.log("pkey",pkey);
-    
-    cert1={ Recepient: 'Hashir Baig',
-    'Last Name': 'Baig',
-    CGPA: 2.9,
-    'Date of Graduation': 43470,
-    Batch: 2015,
-    Email: 'Hashirbaig@gmail.com',
-    Program: 'BSAF',
-    Institution: 'FAST',
-    'Public Key': '0x6e6F07247161E22E1a259196F483cCEC21dfBfF9' }
+module.exports.GetCertificates = function (req, res) {
 
-    cert=[]
+    const pkey = req.params.pkey;
+    console.log("get certificate called");
+    console.log("pkey", pkey);
+
+    cert1 = {
+        Recepient: 'Hashir Baig',
+        'Last Name': 'Baig',
+        CGPA: 2.9,
+        'Date of Graduation': 43470,
+        Batch: 2015,
+        Email: 'Hashirbaig@gmail.com',
+        Program: 'BSAF',
+        Institution: 'FAST',
+        'Public Key': '0x6e6F07247161E22E1a259196F483cCEC21dfBfF9'
+    }
+
+    cert = []
     cert.push(cert1);
     cert.push(cert1);
-    
+
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(cert));
 
-    
+
 }
 
 
@@ -119,34 +119,49 @@ module.exports.setPassword = function (req, res) {
 
 module.exports.uploadRecepient = function (req, res) {
 
-    console.log("in server side of upload ercep");
+
+    console.log("Server Side:  Upload Recepient");
 
     var workbook = XLSX.readFile('./public/Uploads/' + req.file.filename);
     var sheet_name_list = workbook.SheetNames;
     var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
-    console.log(xlData);
+
+    // Converting Excel Data to JSON and Adding ID  & Password against each student.
+
+    xlData.forEach((row) => {
+        var temp = uuidv4();;
+        row['id'] = temp
+        bcrypt.hash(temp, 10, function (err, hash) {
+            if (err) {
+                console.log(err);
+                throw err;
+            } else {
+                row['password'] = hash;
+                console.log(xlData);
 
 
-    let studentInfo = new student({
-        data: xlData,
-        InstituteID: req.session.uid,
-        Name: req.file.filename.slice(0, -5)
-    });
+                let studentInfo = new student({
+                    data: xlData,
+                    InstituteID: req.session.uid,
+                    Name: req.file.filename.slice(0, -5)
+                });
 
-    studentInfo.save(function (err, result) {
-        if (err) {
-            console.log(err);
-            throw err;
-        } else {
-            console.log(result);
+                studentInfo.save(function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        throw err;
+                    } else {
+                        console.log("student info added");
 
-        }
-    });
+                    }
+                });
 
-    console.log(xlData.length)
-    /*
-    var wb = XLSX.readFile("./public/Uploads/"+req.file.filename);
-    console.log(wb);*/
+
+            }
+        });
+    })
+
+    // Storing Recepient's Data in Recepient Table 
 
     let newRecepient = new recepient({
         Status: "Pending",
@@ -188,7 +203,6 @@ module.exports.loadRecepient = function (req, res) {
         });
     })
 
-
 }
 
 
@@ -229,11 +243,11 @@ module.exports.IssueCertificates = function (req, res) {
         };
         console.log(JSONDATA);
 
-        const root = blockchain.computeMerkleRoot(JSONDATA, "Data.xlsx") 
+        const root = blockchain.computeMerkleRoot(JSONDATA, "Data.xlsx")
         console.log(root)
 
         console.log("Publishing root on Blockchain")
-        const txid = blockchain.publishOnBlockchain(root,5)
+        const txid = blockchain.publishOnBlockchain(root, 5)
         console.log(txid)
     })
     res.redirect('back')
@@ -242,14 +256,21 @@ module.exports.IssueCertificates = function (req, res) {
 module.exports.sendEmail = function (req, res) {
     console.log("Send Email!");
     var emails = [];
-    student.find({InstituteID: req.session.uid}, {_id: 0, data: 1}, function(err, arr){
-        data_arr = arr.map( function(u) { return u.data; } );
-        for (i = 0;i < data_arr.length;i++){
-            for (j = 0;j < data_arr[i].length;j++){
+    student.find({
+        InstituteID: req.session.uid
+    }, {
+        _id: 0,
+        data: 1
+    }, function (err, arr) {
+        data_arr = arr.map(function (u) {
+            return u.data;
+        });
+        for (i = 0; i < data_arr.length; i++) {
+            for (j = 0; j < data_arr[i].length; j++) {
                 emails.push(data_arr[i][j].Email);
             }
         }
-        if (emails.length == 0){
+        if (emails.length == 0) {
             console.log("No recipients found for sending Invites!");
             return;
         }
@@ -259,23 +280,23 @@ module.exports.sendEmail = function (req, res) {
         var transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-              user: 'edcertsweb@gmail.com',
-              pass: 'blockchain'
+                user: 'edcertsweb@gmail.com',
+                pass: 'blockchain'
             }
         });
-          
+
         var mailOptions = {
             from: 'edcertsweb@gmail.com',
             to: email_str,
             subject: 'Invitation for receiving certificate | Edcerts',
             text: 'Dear user,\n\nYou have been sent an invitation to add the institute XYZ in Edcerts application. This will allow you to receive certificate from the institute. Please click on the below link to continue:\n\nhttps://edcert.herokuapp.com \n\nRegards,\nTeam Edcerts'
         };
-          
-        transporter.sendMail(mailOptions, function(error, info){
+
+        transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-              console.log(error);
+                console.log(error);
             } else {
-              console.log('Email sent: ' + info.response);
+                console.log('Email sent: ' + info.response);
             }
         });
     });
