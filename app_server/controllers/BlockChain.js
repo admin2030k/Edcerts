@@ -4,6 +4,7 @@ var xlsx = require('excel4node');
 var tx = require('./BlockChainController')
 var fs = require('fs');
 var Excel = require('exceljs');
+var degree = require('../models/degree');
 
 module.exports.computeMerkleRoot=function(jsonData, proofDest) {
     var workbook = new xlsx.Workbook();
@@ -31,36 +32,35 @@ module.exports.computeMerkleRoot=function(jsonData, proofDest) {
     return root
 }
 
-module.exports.publishOnBlockchain=function(root, size) {
-    return tx.makeTransaction(root, true)
+module.exports.publishOnBlockchain=function(root, fromPvtKey, fromPubKey, toPubKey, size) {
+    return tx.makeTransaction(root, fromPvtKey, fromPubKey, toPubKey, true)
 }
 
 // -----------------------------------------------------------
-/*
-function verifyCertificates(root, dataFile) {
-    var data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
-    const dataHash = data.map(x => SHA256(JSON.stringify(x)));
-    const tree = new MerkleTree(dataHash, SHA256)
-    // Verification
-    var workbook = new Excel.Workbook();
-    workbook.xlsx.readFile(dataFile)
-        .then(function() {
-            var worksheet = workbook.getWorksheet(1);
-            for(var i = 1; i <= 10; i++) {
-                var row = worksheet.getRow(i);
-                var cert = row.getCell(1).value;
 
-                jsonProof = JSON.parse(row.getCell(2).value)
-                for(var key in jsonProof) {
-                    jsonProof[key].data = Buffer.from(jsonProof[key].data)
-                }
+// function verifyCertificates(root, dataFile) {
+//     var data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+//     const dataHash = data.map(x => SHA256(JSON.stringify(x)));
+//     const tree = new MerkleTree(dataHash, SHA256)
+//     // Verification
+//     var workbook = new Excel.Workbook();
+//     workbook.xlsx.readFile(dataFile)
+//         .then(function() {
+//             var worksheet = workbook.getWorksheet(1);
+//             for(var i = 1; i <= 10; i++) {
+//                 var row = worksheet.getRow(i);
+//                 var cert = row.getCell(1).value;
 
-                var leaf = SHA256(cert)
-                console.log(tree.verify(jsonProof, leaf, root)) // true
-            }
-        });
-}
-*/
+//                 jsonProof = JSON.parse(row.getCell(2).value)
+//                 for(var key in jsonProof) {
+//                     jsonProof[key].data = Buffer.from(jsonProof[key].data)
+//                 }
+
+//                 var leaf = SHA256(cert)
+//                 console.log(tree.verify(jsonProof, leaf, root)) // true
+//             }
+//         });
+// }
 
 // -------------------------------------------------------------------
 /*
