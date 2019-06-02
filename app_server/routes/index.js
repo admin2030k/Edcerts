@@ -144,12 +144,7 @@ router.get('/Institute/Dashboard', checkIfInstituteTier, function (req, res) {
 
 router.get('/Institute/Recipients', checkIfInstituteTier, Institute.loadRecepient);
 
-router.get('/Institute/Certificate/Issued', function (req, res) {
-  var InstituteName = req.session.name;
-  res.render('Institute/CertificateIssued', {
-    InstituteName
-  });
-});
+router.get('/Institute/Certificate/Issued',checkIfInstituteTier,Institute.LoadCertificateIssued);
 
 router.get('/Institute/Certificate/Draft', checkIfInstituteTier, Institute.DraftCertificate);
 

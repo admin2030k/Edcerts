@@ -21,7 +21,7 @@
         <% degree.forEach( function(degree) { %>
         <tr>
           <td> <label>
-              <input class="check" type="checkbox" />
+              <input class="check" type="checkbox"  name="rec" value="<%= degree._id%>"/>
               <span class="label-text"></span>
             </label>
           </td>
@@ -39,7 +39,7 @@
     </table>
   </div>
   <div id="RecepOptions">
-    <div><a href=""><span>Delete</span></a></div>
+    <div><a href="" id="delete" onclick="CallDelete()"><span>Delete</span></a></div>
   </div>
 
 </body>
@@ -50,6 +50,7 @@
     $('.modal').modal();
   });
 </script>
+
 <script>
   $(document).ready(function () {
     $("#createbtn").click(function () {
@@ -61,5 +62,23 @@
     });
   });
 </script>
+<script>
+ 
+function CallDelete() {
+  var selected = [];
+
+      $.each($("input[name='rec']:checked"), function () {
+        selected.push($(this).val());
+      });
+  
+
+      
+}
+
+
+</script>
+
+
+
 
 </html>

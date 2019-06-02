@@ -337,3 +337,15 @@ module.exports.sendEmail = function (req, res) {
 
     res.redirect('/Institute/Recipients')
 }
+
+
+module.exports.LoadCertificateIssued= function (req, res) {
+    var InstituteName = req.session.name;
+    
+    res.render('Institute/CertificateIssued', {
+      InstituteName
+    });
+
+
+
+  }
