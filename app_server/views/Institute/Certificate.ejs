@@ -2,8 +2,10 @@
 
 </head>
 
-<body>
-    <div style="background-color:lightskyblue">
+<body class="bodys">
+    <!-- <div style="background-color:lightskyblue"> -->
+            <!-- <div id="particles-js" class="statics"></div> stats - count particles -->
+
         <% include /partials/navbar %>
 
         <div class="card hovercard">
@@ -51,10 +53,8 @@
         <div id="modal1" class="modal modalDegreesend">
             <div class="modal-content">
 
-                <form class="col s10" method="POST" action="/IssueCertificates" id="IssueCertificatesForm">
-
-
-                    <div class="row">
+                <form class="col s8" method="POST" action="/IssueCertificates" id="IssueCertificatesForm">
+                    <div >
                         <input type="text" name="templateid" id="templateid" value="" hidden>
                         <div class="input-field col s12">
                             <select name="recepient">
@@ -70,7 +70,7 @@
                     </div>
                 </form>
             </div>
-            <a id="IssueCertBtn" class="modal-close waves-effect right waves-green btn-flat">Issue</a>
+            <a id="IssueCertBtn" class="modal-close waves-effect waves-light btn-small right hoverable white-text spaces-all">Issue</a>
         </div>
     </div>
 
