@@ -27,8 +27,10 @@ function drawChart() {
 
   // Set chart options
   var options = {'title':'Number of Universities in each Province',
-                 'width':800,
-                 'height':600};
+                 'width':600,
+                 'height':400,
+                 'backgroundColor': 'transparent'
+                };
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
@@ -37,11 +39,12 @@ function drawChart() {
 </script>
 </head>
 <body>
-    
+    <div id="particles-js"></div> <!-- stats - count particles -->
+
   <% include /partials/navbar %>
-  <div class="center">
-<h3>Statistics</h3>
-<div id="chart_div"></div></div>
+  <div class="card center main-center">
+<h4 class="statistics">Statistics</h4>
+<div id="chart_div" class="center"></div></div>
  </body>
   
 

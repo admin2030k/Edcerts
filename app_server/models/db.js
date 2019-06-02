@@ -1,13 +1,12 @@
 var mongoose = require('mongoose');
 
 
-var dbURI = 'mongodb://localhost/Edcert';
+var dbURI = 'mongodb://localhost:27017/todos';
 
 
 if (process.env.NODE_ENV === 'production') {
 
-    var dbURI = 'mongodb://Ahmad:edcert123@ds135196.mlab.com:35196/edcert';
-    
+    var dbURI = 'mongodb://Ahmad:edcert123@ds135196.mlab.com:35196/edcert';    
 }
 mongoose.connect(dbURI);
 
@@ -51,5 +50,4 @@ require('./entity');
 require('./certificate');
 require('./ca_institute');
 require('./admin_ca');
-require('./degree');
 

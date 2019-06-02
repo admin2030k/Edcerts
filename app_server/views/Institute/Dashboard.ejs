@@ -19,7 +19,9 @@ google.charts.setOnLoadCallback(drawChart);
         ['2018', 145, 'stroke-color: #871B47; stroke-opacity: 0.6; stroke-width: 8; fill-color: #BC5679; fill-opacity: 0.2']
       ]); var options = {'title':'Degrees Issued per Year',
                  'width':800,
-                 'height':600};
+                 'height':400,
+                 'background':'transparent'
+                };
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
@@ -28,23 +30,15 @@ google.charts.setOnLoadCallback(drawChart);
 </head>
 
 <body>
+    <div id="particles-js"></div> <!-- stats - count particles -->
+
   <% include /partials/navbar %>
-
-  <div class="center">
-<h4>Statistics</h4>
-<div id="chart_div"></div></div>
-
-
-
-
-
-
-
-
-
-
-
-
+  <div class="card center main-center-wide  ">
+    <div class="center">
+      <h4 class="statistics">Statistics</h4>
+      <div id="chart_div" class="center"></div>
+    </div>
+  </div>
 
 </body>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
