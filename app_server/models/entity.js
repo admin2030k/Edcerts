@@ -8,7 +8,7 @@ var EntitySchema = new mongoose.Schema({
     tier: Number,
     Activity:{type:Number, default:0},
     Name:String,
-    PublicKey:{type:Number, default:""}
+    PublicKey:{type:String, default:""}
 });
 
 module.exports = mongoose.model('Entity',EntitySchema);

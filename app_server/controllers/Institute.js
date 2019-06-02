@@ -58,13 +58,37 @@ module.exports.ViewDegree = function (req, res) {
     const degreeid = req.params.degreeid
     console.log("View Degree called!")
     console.log("Degree ID", degreeid)
+
     degree.findById(degreeid, function (err, res2) {
         if (err) {
             console.log(err)
         } else {
+
+            res2 = res2.degree[0]
+            
             console.log(res2)
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify(res2));
+            
+            recepient.find({
+                InstituteID: req.session.uid
+            }, (err, recep) => {
+
+
+                var InstituteName = req.session.name;
+               res.render('Institute/Degree', {
+                    recep,
+                    InstituteName,
+                    res2,degreeid
+                });
+                /*degree=res2
+                res.render('Institute/CertificateDraft', {
+                    degree,
+                    InstituteName
+                })*/
+        
+
+            })
+
+
         }
     })
 }
@@ -262,6 +286,16 @@ function sha256(data) {
 
 module.exports.IssueCertificates = function (req, res) {
     console.log(req.body.templateid);
+    var pkey=req.body.passhrase;
+
+    pkey = pkey.substring(2, pkey.length)
+
+    var walletaddress=req.body.walletaddress;
+    console.log("===================");
+    console.log(pkey)
+    console.log(walletaddress)
+    console.log("===================");
+    
     var path = req.body.recepient + ".xlsx";
     console.log(path);
 
@@ -345,9 +379,9 @@ module.exports.IssueCertificates = function (req, res) {
         }
 
         console.log("Publishing root on Blockchain")
-        fromPubKey = process.env.WALLET_ADDRESS
-        fromPvtKey = process.env.WALLET_PRIVATE_KEY
-        toPubKey = process.env.DESTINATION_WALLET_ADDRESS
+        fromPubKey = walletaddress
+        fromPvtKey = pkey//process.env.WALLET_PRIVATE_KEY
+        toPubKey = walletaddress//process.env.DESTINATION_WALLET_ADDRESS
         const txid = blockchain.publishOnBlockchain(root.toString('hex'), fromPvtKey, fromPubKey, toPubKey, 5)
         console.log(txid)
 
@@ -516,4 +550,27 @@ module.exports.DeleteRecepientList = function (req, res) {
         })
 
     }
+}
+
+
+module.exports.UpdateInstitutePublicKey =function (req,res) {
+
+    console.log(req.params.pkey);
+var pkey=req.params.pkey
+  User.findOneAndUpdate({
+         _id:req.session.uid
+  },{$set:{PublicKey:pkey} }, (err, result) => {
+/*
+        var InstituteName = req.session.name;
+
+        res.render('Institute/Recipients', {
+            recep,
+            InstituteName
+        });*/
+
+        console.log(result);
+    })
+
+    res.send(200);
+    
 }
