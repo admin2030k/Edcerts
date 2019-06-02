@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 
-var dbURI = 'mongodb://localhost:27017/todos';
+var dbURI = 'mongodb://localhost:27017/Edcert';
 
 
 if (process.env.NODE_ENV === 'production') {

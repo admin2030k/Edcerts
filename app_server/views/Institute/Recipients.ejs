@@ -56,16 +56,16 @@
           </tr>
           <% }) %>
         </tbody>
-      </table>
-    </div>
-    <div id="RecepOptions">
-      <form action="/sendEmail" method="post">
-          <button name="sendInvite" value="invite">Invite</button>
+
       </form>
-      <!-- <div><a href=""> <span>Invite</span></a></div> -->
-      <div><a href=""><span>Delete</span></a></div>
-    </div>
-  
+    </table>
+  </div>
+  <div id="RecepOptions">
+    <form action="/sendEmail" method="post">
+      <button name="sendInvite" value="invite">Invite</button>
+    </form>
+    <!-- <div><a href=""> <span>Invite</span></a></div> -->
+    <div><a onclick="CallDelete()"><span>Delete</span></a></div>
   </div>
 
 </body>
@@ -122,6 +122,12 @@
 
 
   });
+</script>
+
+<script>
+  function CallDelete() {
+    document.forms["deleteRecepientList"].submit();
+  }
 </script>
 
 </html>
