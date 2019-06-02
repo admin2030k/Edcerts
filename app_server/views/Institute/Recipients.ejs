@@ -3,64 +3,69 @@
 </head>
 
 <body>
+  <div id="particles-js"></div> <!-- stats - count particles -->
+
   <% include /partials/navbar %>
-  <div>
-    <h4>Recipients</h4>
-
-    <form enctype="multipart/form-data">
-      <input name="file" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-
-    </form>
-    <progress value="0"></progress>
-
-  </div>
-
-
-  <div id="recep">
-    <table class="centered responsive-table">
-      <thead>
-        <tr>
-          <th>Select</th>
-          <th>List Name</th>
-          <th>Issue Date</th>
-          <th>Total</th>
-          <th>Status</th>
-
-        </tr>
-      </thead>
-
-      <tbody id="tablebody">
-
-        <% recep.forEach( item => { %>
-        <tr>
-          <td> <label>
-              <input class="check" type="checkbox" id="<%= item._id %>" />
-              <span class="label-text"></span>
-            </label>
-          </td>
-          <td>
-            <%= item.Name %>
-          </td>
-          <td>
-            <%= (new Date(item.IssueDate)).toLocaleDateString() %>
-          </td>
-          <td>
-            <%= item.Records %>
-          </td>
-          <td>
-            <%= item.Status %>
-          </td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </div>
-  <div id="RecepOptions">
-    <form action="/sendEmail" method="post">
-        <button name="sendInvite" value="invite">Invite</button>
-    </form>
-    <!-- <div><a href=""> <span>Invite</span></a></div> -->
-    <div><a href=""><span>Delete</span></a></div>
+  <div class="card center main-center-long padding-text-large">
+    <div>
+      <h4>Recipients</h4>
+  
+      <form enctype="multipart/form-data">
+        <input name="file" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+  
+      </form>
+      <progress value="0"></progress>
+  
+    </div>
+  
+  
+    <div id="recep">
+      <table class="centered responsive-table">
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>List Name</th>
+            <th>Issue Date</th>
+            <th>Total</th>
+            <th>Status</th>
+  
+          </tr>
+        </thead>
+  
+        <tbody id="tablebody">
+  
+          <% recep.forEach( item => { %>
+          <tr>
+            <td> <label>
+                <input class="check" type="checkbox" id="<%= item._id %>" />
+                <span class="label-text"></span>
+              </label>
+            </td>
+            <td>
+              <%= item.Name %>
+            </td>
+            <td>
+              <%= (new Date(item.IssueDate)).toLocaleDateString() %>
+            </td>
+            <td>
+              <%= item.Records %>
+            </td>
+            <td>
+              <%= item.Status %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <div id="RecepOptions">
+      <form action="/sendEmail" method="post">
+          <button name="sendInvite" value="invite">Invite</button>
+      </form>
+      <!-- <div><a href=""> <span>Invite</span></a></div> -->
+      <div><a href=""><span>Delete</span></a></div>
+    </div>
+  
   </div>
 
 </body>

@@ -1,29 +1,25 @@
-<div class="card hovercard">
-  <div class="card-background white">
-  </div>
-  <div>
-    <h4>Degree</h4>
-    <a id="UploadCerti" class="btn-small" onclick="$('#modal1').modal('open');">Create</a>
-
+<div class="center">
+  <div class="center">
+    <h4 class="inlines blue-text">Degree</h4>
   </div>
 
   <br>
-  <ul id="CertOptions" class="tabs">
-    <li style="display:inline;"><a href="/Institute/Certificate/Issued">Issued</a></li>
-    <li style="display:inline;"><a href="/Institute/Certificate/Draft">Drafts</a></li>
-  </ul>
+  <div class="card center">
+    <ul id="CertOptions">
+      <li style="display:inline;"><a href="/Institute/Certificate/Issued">Issued</a></li>
+      <li style="display:inline;"><a href="/Institute/Certificate/Draft">Drafts</a></li>
+      <li style="display:inline;margin-left: 60%;">  <a id="UploadCerti" class="btn-small" onclick="$('#modal1').modal('open');">Create</a></li>
+    </ul>  
+  </div>
 </div>
 
 
 
 <div id="modal1" class="modal modalDegreeCreate">
   <div class="modal-content">
-
-
     <form id="DegreeForm" class="col s10" method="POST" action="/CreateDegree">
-
+      <h5 style="margin-left:10px;">Select Degree Fields</h5>
       <div class="input-field hoverable col s10 Form2Field">
-        <i class="material-icons prefix Form2Field">description</i>
         <input id="title" name="title" type="text" class="validate">
         <label for="title">Degree Title</label>
       </div>
@@ -81,6 +77,6 @@
     </form>
   </div>
 
-  <a class="modal-close waves-effect right waves-green btn-flat" id="createbtn">Create</a>
+  <a class="waves-effect waves-light btn right hoverable white-text" id="createbtn">Create</a>
 
 </div>
