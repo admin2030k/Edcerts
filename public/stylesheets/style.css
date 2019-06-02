@@ -11,6 +11,18 @@
   color: white !important;
 }
 
+.material-icons-gr.active {
+  color: color1 !important;
+}
+
+.modal-content{
+  margin-left: 2%;
+}
+
+.material-icons-gr {
+  color: gainsboro !important;
+}
+
 .card-panel{
   position: relative;
 }
@@ -206,6 +218,13 @@ h5,
   margin-left: 2%;
 }
 
+#CertOptions{
+  padding-bottom: 10px;
+  padding-top: 10px;
+  /* background: #4CCFC5; */
+  text-align: center;
+}
+
 #CertOptions li {
   margin-left: 1%;
   padding: 2%;
@@ -293,6 +312,13 @@ nav .input-field label:focus {
   width: 600px !important;
   margin-left: 5% !important;
 }
+.inlines{
+  display: inline;
+}
+
+.card .hovercard{
+
+} 
 
 .statistics{
   /* margin-top: 10px !important; */
@@ -325,9 +351,17 @@ nav .input-field label:focus {
   padding: 20px;
 }
 
+#createbtn{
+
+  margin-top: 10  px;
+  height: 10%;
+  text-align: center !important;
+}
+
 .modalDegreeCreate {
   width: 55% !important;
-  max-height: 81% !important;
+  height: 35%;
+  /* max-height: 81% !important; */
   overflow: visible
 }
 
