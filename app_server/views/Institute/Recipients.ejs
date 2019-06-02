@@ -10,8 +10,8 @@
     <div>
       <h4>Recipients</h4>
   
-      <form enctype="multipart/form-data">
-        <input name="file" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+      <form enctype="multipart/form-data ">
+        <input name="file" type="file" class="waves-effect waves-light btn-small hoverable white-text" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
   
       </form>
       <progress value="0"></progress>
@@ -56,17 +56,22 @@
           </tr>
           <% }) %>
         </tbody>
-
-      </form>
-    </table>
-  </div>
-  <div id="RecepOptions">
-    <form action="/sendEmail" method="post">
-      <button name="sendInvite" value="invite">Invite</button>
-    </form>
-    <!-- <div><a href=""> <span>Invite</span></a></div> -->
-    <div><a onclick="CallDelete()"><span>Delete</span></a></div>
-  </div>
+      </table>
+    </div>
+    <div id="RecepOptions">
+      <ul>
+        <li class="inls">
+            <form action="/sendEmail" method="post" class="inls">
+              <button name="sendInvite"  class="waves-effect waves-light btn-small hoverable white-text inls" value="invite">Invite</button>
+          </form>    
+        </li>
+        <li class="inls">
+            <div class="inls"><a  class="waves-effect waves-light btn-small hoverable white-text" onclick="CallDelete()"><span>Delete</span></a></div>
+        </li>
+      </ul>
+      <!-- <div><a href=""> <span>Invite</span></a></div> -->      
+    </div>  
+    </div>
 
 </body>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>

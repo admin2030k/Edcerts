@@ -3,68 +3,73 @@
 </head>
 
 <body>
-    <% include /partials/navbar %>
-    <div class="card hovercard">
-        <div class="card-background white">
-            <li style="display:inline;"><a href="/Institute/Certificate/Draft">Drafts ></a></li>
+    <div style="background-color:lightskyblue">
+        <% include /partials/navbar %>
+
+        <div class="card hovercard">
+            <div class="card-background white">
+                <li style="display:inline;"><a href="/Institute/Certificate/Draft">Drafts ></a></li>
+            </div>
+            <div>
+                <h5>Degree Title</h5>
+            </div>
+            <div id="CerOps">
+                <a class="waves-effect waves-light btn-small certbtn black-text spaces">Preview</a>
+                <a class="waves-effect waves-light btn-small certbtn black-text spaces">Edit</a>
+                <a class="waves-effect waves-light btn-small certbtn black-text spaces"
+                    onclick="$('#modal1').modal('open');">Issue</a>
+            </div>
+            <br>
+
         </div>
-        <div>
-            <h5>Degree Title</h5>
+        <div class="center spaces-all">
+            <div class="chip">
+                <a href="">Layout</a>
+            </div>
+            <div class="chip spaces-all">
+                <a href="">MetaData</a>
+            </div>
         </div>
-        <div id="CerOps">
-            <a class="waves-effect waves-light btn-small certbtn black-text">Preview</a>
-            <a class="waves-effect waves-light btn-small certbtn black-text">Edit</a>
-            <a class="waves-effect waves-light btn-small certbtn black-text" onclick="$('#modal1').modal('open');">Issue</a>
+
+        <div id="A4Layout">
+            <div class="center">
+                <img src="/images/icon_logo.png" id="logo"alt="">
+                <h3 class="center  spaces-text">
+                    <%= degree.Title %>
+                </h3>
+            </div>
+            <div id="Fields">
+                <% degree.Fields.forEach( function(degree) { %>
+                <h6 class="hsix">
+                    <%=  degree %>
+                </h6>
+                <% }) %>
+                <p class="pp">This is to certify that <u>recepient</u> son of <u>father name</u> has successfully completed <u>program</u> from <u>university</u></p>
+            </div>
         </div>
-        <br>
 
-    </div>
-    <div class="center">
-        <div class="chip">
-            <a href="">Layout</a>
-        </div>
-        <div class="chip">
-            <a href="">MetaData</a>
-        </div>
-    </div>
+        <div id="modal1" class="modal modalDegreesend">
+            <div class="modal-content">
 
-    <div id="A4Layout">
-        <img src="/images/logo.png" id="logo" alt="">
-        <div id="Fields">
-
-            <h3 class="center">
-                <%= degree.Title %>
-            </h3>
-            <% degree.Fields.forEach( function(degree) { %>
-            <h4>
-                <%=  degree %>
-            </h4>
-            <% }) %>
-            <h6>Lorem ipsum Lorem ipsum dolor sit amet consectetur adipisicing elit.</h6>
-        </div>
-    </div>
-
-    <div id="modal1" class="modal modalDegreesend">
-        <div class="modal-content">
+                <form class="col s10" method="POST" action="/IssueCertificates" id="IssueCertificatesForm">
 
 
-            <form class="col s10" method="POST" action="/IssueCertificates" id="IssueCertificatesForm">
-
-
-                <div class="row">
-                    <input type="text" name="templateid" id="templateid" value="" hidden>
-                    <div class="input-field col s12">
-                        <select name="recepient">
-                            <option value="" disabled selected>Choose your option</option>
-                            <% recep.forEach( function(r) { %>
-                            <option value="<%= r.Name%>">
-                                <%= r.Name %>
-                            </option>
-                            <% }) %>
-                        </select>
-                        <label>Recipient</label>
+                    <div class="row">
+                        <input type="text" name="templateid" id="templateid" value="" hidden>
+                        <div class="input-field col s12">
+                            <select name="recepient">
+                                <option value="" disabled selected>Choose your option</option>
+                                <% recep.forEach( function(r) { %>
+                                <option value="<%= r.Name%>">
+                                    <%= r.Name %>
+                                </option>
+                                <% }) %>
+                            </select>
+                            <label>Recipient</label>
+                        </div>
                     </div>
 
+     
 
 
                 </div>
@@ -75,10 +80,9 @@
                     </div>
 
             </form>
+              <a id="IssueCertBtn" class="modal-close waves-effect right waves-green btn-flat">Issue</a>
+
         </div>
-
-        <a id="IssueCertBtn" class="modal-close waves-effect right waves-green btn-flat">Issue</a>
-
     </div>
 
 </body>

@@ -215,7 +215,12 @@ table {
 .card-background,
 h5,
 #Fields {
+  margin-top: 20px;
   margin-left: 2%;
+}
+
+.center .spaces-text{
+  padding-bottom: 30px;
 }
 
 #CertOptions{
@@ -261,15 +266,46 @@ nav .input-field label:focus {
   border-radius: 25px;
 }
 
+.blues{
+  /* background: lightskyblue; */
+  background-color: #04abc0;
+}
+
+.spaces{
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.spaces-text{
+  margin-top: 4px !important;
+  margin-bottom: 4px !important;
+}
+
+
+.spaces-logo{
+  margin-right: 0 ;
+  margin-left: 40px ;
+}
+
+.spaces-all{
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 #A4Layout {
 
-  background-color: lightblue;
+  background-color: white;
   min-width: 15vw;
-  max-width: 65vw;
+  max-width: 60vw;
   min-height: 140vh;
   max-height: 140vh;
   margin-left: auto;
   margin-right: auto;
+}
+
+#A4Layout{
+  
 }
 
 .textColor{
@@ -280,13 +316,34 @@ nav .input-field label:focus {
   background: #4CCFC5 !important;
 }
 
+.inls{
+  display: inline;
+}
+
+.btn-larg{
+  height: 100px;
+}
+
+.pp{
+  margin-top: 20px;
+    font-size: 16px;
+    margin-left: 42px;
+
+}
+
+
+.hsix{
+  margin-left: 40px;
+  font-size: 20px;
+}
+
 #logo {
-
-  margin-left: 35%;
-
-  position: relative;
+  display: inline;
+  /* margin-left: 35%; */
+  margin-top:40px;
+  /* position: relative; */
   z-index: 1;
-  width: 30%;
+  width: 20%;
   height: auto;
 }
 
@@ -353,7 +410,7 @@ nav .input-field label:focus {
 
 #createbtn{
 
-  margin-top: 10  px;
+  margin-top: 10    px;
   height: 10%;
   text-align: center !important;
 }

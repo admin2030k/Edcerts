@@ -3,60 +3,79 @@
 </head>
 
 <body>
-    <div id="particles-js"></div> <!-- stats - count particles -->
+  <div id="particles-js"></div> <!-- stats - count particles -->
 
   <% include /partials/navbar %>
 
 
-<div id="Form2"> 
-   <form class="col s10" method="POST" action="/addCentralAuthority">
+  <div id="Form2" >
+    <form class="col s10" name="form1"  method="POST" onsubmit="return required()"  action="/addCentralAuthority">
 
-  
-  <div class="row">
-    
-    <div class="row">
-        <div class="input-field hoverable col s10 Form2Field">
-          <i class="material-icons Form2Field prefix">account_circle</i>
-          <input id="ID" name="ID" type="text" class="validate" >
-          <label for="ID">Central Authority Name</label>
+      <div class="row">
+        <div class="row">
+          <div class="input-field hoverable col s10 Form2Field">
+            <i class="material-icons Form2Field prefix">account_circle</i>
+            <input id="ID" name="ID" type="text" class="validate">
+            <label for="ID">Central Authority Name</label>
+          </div>
         </div>
-  </div>
-  <div class="row">
-    <div class="input-field hoverable col s10 Form2Field">
-      <i class="material-icons Form2Field prefix">account_circle</i>
-      <input id="email" name="email" type="text" class="validate" >
-      <label for="email">Central Authority Email</label>
-    </div>
-</div>
-  <div class="row">
-    <div class="input-field Form2Field hoverable col s10">
-      <i class="material-icons  Form2Field prefix">vpn_key</i>
-      <input id="password"name="password"  type="password" class="validate">
-      <label for="password">Password</label>
-    </div>  
-  </div>
 
-  <div class="row">
-      <div class="input-field Form2Field hoverable col s10">
-          <i class="material-icons prefix Form2Field ">replay</i>
-          <input id="password2" type="password" class="validate">
-          <label for="password2">Retype Password</label>
+        <div class="row">
+          <div class="input-field hoverable col s10 Form2Field">
+            <i class="material-icons Form2Field prefix">account_circle</i>
+            <input id="email" name="email" type="text" class="validate">
+            <label for="email">Central Authority Email</label>
+          </div>
         </div>
+
+        <div class="row">
+          <div class="input-field Form2Field hoverable col s10">
+            <i class="material-icons  Form2Field prefix">vpn_key</i>
+            <input id="password" name="password" type="password" class="validate">
+            <label for="password">Password</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field Form2Field hoverable col s10">
+            <i class="material-icons prefix Form2Field ">replay</i>
+            <input id="password2" name="password2" type="password" class="validate">
+            <label for="password2">Retype Password</label>
+          </div>
+        </div>
+        <input class="waves-effect waves-light btn-small right hoverable white-text " type="submit" value="Invite">
+    </form>
   </div>
-  <input  class="waves-effect waves-light btn-small right hoverable white-text " type="submit"  value="Invite">
-</form>
-</div>
-
-
-
-
-
 </body>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-<script>
- 
-
-
+<script type="text/javascript">
+  function required() {
+    var empt = document.form1.ID.value;
+    
+    if (document.form1.ID.value === "") {
+      alert("Please input a Value");
+      return false;
+    }
+    else if (document.form1.email.value === "") {
+      alert("Please input a Value");
+      return false;
+    }
+    else if (document.form1.password.value === "") {
+      alert("Please input a Value");
+      return false;
+    }
+    else if (document.form1.password2.value === "") {
+      alert("Please input a Value");
+      return false;
+    }
+    else if (document.form1.password.value !== document.form1.password2.value) {
+      alert("Please input a Value");
+      return false;
+    }
+    else 
+      return true;
+    
+  }
 </script>
 </html>
