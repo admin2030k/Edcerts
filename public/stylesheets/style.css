@@ -261,9 +261,25 @@ nav .input-field label:focus {
   border-radius: 25px;
 }
 
+.blues{
+  /* background: lightskyblue; */
+  background-color: #04abc0;
+}
+
+.spaces{
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.spaces-all{
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 #A4Layout {
 
-  background-color: lightblue;
+  background-color: white;
   min-width: 15vw;
   max-width: 65vw;
   min-height: 140vh;
@@ -278,6 +294,14 @@ nav .input-field label:focus {
 
 .btn{
   background: #4CCFC5 !important;
+}
+
+.inls{
+  display: inline;
+}
+
+.btn-larg{
+  height: 100px;
 }
 
 #logo {
@@ -353,7 +377,7 @@ nav .input-field label:focus {
 
 #createbtn{
 
-  margin-top: 10  px;
+  margin-top: 10    px;
   height: 10%;
   text-align: center !important;
 }
