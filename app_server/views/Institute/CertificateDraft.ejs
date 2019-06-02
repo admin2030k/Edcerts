@@ -7,6 +7,7 @@
 
   <% include /partials/CertificateCard %>
   <div id="recep">
+<<<<<<< HEAD
     <table class="centered responsive-table">
       <thead>
         <tr>
@@ -34,12 +35,48 @@
         </tr>
 
         <% }) %>
+=======
+    <form id="DegreeTemplate" class="col s10" method="POST" action="/DeleteDegreeTemplate">
 
-      </tbody>
-    </table>
+      <table class="centered responsive-table">
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Name</th>
+            <th>Last Modified Date</th>
+          </tr>
+        </thead>
+
+
+        <tbody>
+          <% degree.forEach( function(degree) { %>
+          <tr>
+            <td> <label>
+                <input class="check" type="checkbox" name="rec" value="<%= degree._id%>" />
+                <span class="label-text"></span>
+              </label>
+            </td>
+            <td><a href="/Institute/Certificate/<%= degree._id%>">
+                <%= degree.Title %></a><%= degree._id%> </td>
+            <td>
+              <%=  (new Date(degree.DateofCreation)).toLocaleDateString()  %>
+            </td>
+          </tr>
+          <% }) %>
+
+        </tbody>
+      </table>
+      
+    </form>
+>>>>>>> port changes
+
   </div>
   <div id="RecepOptions">
+<<<<<<< HEAD
     <div><a href=""><span>Delete</span></a></div>
+=======
+    <div><a id="delete" onclick="CallDelete()"><span>Delete</span></a></div>
+>>>>>>> port changes
   </div>
 
 </body>
@@ -61,5 +98,17 @@
     });
   });
 </script>
+<<<<<<< HEAD
+=======
+
+<script>
+  function CallDelete() {
+    document.forms["DegreeTemplate"].submit();
+  }
+</script>
+
+
+
+>>>>>>> port changes
 
 </html>

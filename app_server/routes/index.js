@@ -166,9 +166,15 @@ router.post('/SetPassword', checkIfInstituteTier, Institute.setPassword);
 
 router.post('/sendEmail', checkIfInstituteTier, Institute.sendEmail);
 
-router.patch('/UpdatePublicKey/:id/:pkey', checkIfInstituteTier, Institute.UpdatePublicKey);
 
 router.get('/GetDegrees/:pkey', checkIfInstituteTier, Institute.GetDegrees);
+
+router.post('/DeleteDegreeTemplate', checkIfInstituteTier, Institute.DeleteDegreeTemplate);
+
+router.post('/DeleteRecepientList', checkIfInstituteTier, Institute.DeleteRecepientList);
+
+
+router.patch('/UpdatePublicKey/:id/:email/:pkey', Institute.UpdatePublicKey);
 
 router.get('/ViewDegree/:degreeid', Institute.ViewDegree);
 

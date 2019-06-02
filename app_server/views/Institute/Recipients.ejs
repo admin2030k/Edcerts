@@ -29,12 +29,14 @@
         </tr>
       </thead>
 
+<form action="/DeleteRecepientList" id="deleteRecepientList" method="POST" >
+
       <tbody id="tablebody">
 
         <% recep.forEach( item => { %>
         <tr>
           <td> <label>
-              <input class="check" type="checkbox" id="<%= item._id %>" />
+              <input class="check" type="checkbox" id="<%= item._id %>" value="<%= item._id %>" name="rec" />
               <span class="label-text"></span>
             </label>
           </td>
@@ -53,6 +55,9 @@
         </tr>
         <% }) %>
       </tbody>
+
+    </form>
+
     </table>
   </div>
   <div id="RecepOptions">
@@ -60,7 +65,7 @@
         <button name="sendInvite" value="invite">Invite</button>
     </form>
     <!-- <div><a href=""> <span>Invite</span></a></div> -->
-    <div><a href=""><span>Delete</span></a></div>
+    <div><a  onclick="CallDelete()"><span>Delete</span></a></div>
   </div>
 
 </body>
@@ -118,5 +123,13 @@
 
   });
 </script>
+
+
+<script>
+    function CallDelete() {
+      document.forms["deleteRecepientList"].submit();
+    }
+  </script>
+  
 
 </html>
