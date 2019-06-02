@@ -176,6 +176,9 @@ router.post('/DeleteRecepientList', checkIfInstituteTier, Institute.DeleteRecepi
 
 router.patch('/UpdatePublicKey/:id/:email/:pkey', Institute.UpdatePublicKey);
 
+router.patch('/UpdateInstitutePublicKey/:pkey', Institute.UpdateInstitutePublicKey);
+
+
 router.get('/ViewDegree/:degreeid', Institute.ViewDegree);
 
 router.get('/VerifyDegree/:degreeid', Institute.VerifyDegree);
