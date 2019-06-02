@@ -31,7 +31,8 @@
   
           </tr>
         </thead>
-  
+        <form action="/DeleteRecepientList" id="deleteRecepientList" method="POST">
+
         <tbody id="tablebody">
   
           <% recep.forEach( item => { %>
@@ -56,6 +57,7 @@
           </tr>
           <% }) %>
         </tbody>
+        </form>
       </table>
     </div>
     <div id="RecepOptions">
@@ -66,8 +68,8 @@
           </form>    
         </li>
         <li class="inls">
-            <div class="inls"><a  class="waves-effect waves-light btn-small hoverable white-text" onclick="CallDelete()"><span>Delete</span></a></div>
-        </li>
+            <!--<div class="inls"><a  class="waves-effect waves-light btn-small hoverable white-text" onclick="CallDelete()"><span>Delete</span></a></div>
+       --> </li>
       </ul>
       <!-- <div><a href=""> <span>Invite</span></a></div> -->      
     </div>  
@@ -131,6 +133,7 @@
 
 <script>
   function CallDelete() {
+    
     document.forms["deleteRecepientList"].submit();
   }
 </script>

@@ -13,15 +13,37 @@ var blockchain = require('../controllers/BlockChain')
 var merkle = require('../controllers/merkletree')
 var fastRoot = require('../controllers/fastRoot')
 var merkleProof = require('../controllers/proof')
-
+const uuidv4 = require('uuid/v4');
 
 module.exports.UpdatePublicKey = function (req, res) {
     const id = req.params.id;
     const pkey = req.params.pkey;
 
+
+    const email = req.params.email;
+    // console.log("id", id);
+    // console.log("pkey", pkey);
+    // console.log("email", email);
+
+    student.updateOne({
+        'data.id': id
+    }, {
+        '$set': {
+            'data.$.pkey': pkey,
+        }
+    }, (err, result) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        } else {
+            console.log("Result---->", result);
+            console.log("Public Key Updated");
+        }
+    })
+
     console.log("id", id);
     console.log("pkey", pkey);
-
+/*
     // Assuming Public Key is now updated
     var institutePubKey = "0x6e6f07247161e22e1a259196f483ccec21dfbff9"
     console.log("Publishing transaction on Blockchain from Central Authority to Institute")
@@ -32,7 +54,10 @@ module.exports.UpdatePublicKey = function (req, res) {
     const txid = blockchain.publishOnBlockchain(data, fromPvtKey, fromPubKey, toPubKey, 5)
     console.log(txid)
 
-    res.send(200)
+    res.send(200)*/
+    temp = {};
+    temp['response'] = "Ok";
+    res.send(temp)
 }
 
 
@@ -168,6 +193,11 @@ module.exports.uploadRecepient = function (req, res) {
     console.log(xlData);
 
 
+    xlData.forEach((row) => {
+        var temp = uuidv4();;
+        row['id'] = temp
+        row['pkey'] = ""
+    })
     let studentInfo = new student({
         data: xlData,
         InstituteID: req.session.uid,
@@ -444,6 +474,8 @@ module.exports.VerifyDegree = function (req, res) {
 module.exports.sendEmail = function (req, res) {
     console.log("Send Email!");
     var emails = [];
+    var studentId = [];
+    var name = [];
     student.find({
         InstituteID: req.session.uid
     }, {
@@ -456,6 +488,9 @@ module.exports.sendEmail = function (req, res) {
         for (i = 0; i < data_arr.length; i++) {
             for (j = 0; j < data_arr[i].length; j++) {
                 emails.push(data_arr[i][j].Email);
+                studentId.push(data_arr[i][j].id);
+                name.push(data_arr[i][j].Recepient);
+
             }
         }
         if (emails.length == 0) {
@@ -473,20 +508,23 @@ module.exports.sendEmail = function (req, res) {
             }
         });
 
-        var mailOptions = {
-            from: 'edcertsweb@gmail.com',
-            to: email_str,
-            subject: 'Invitation for receiving certificate | Edcerts',
-            text: 'Dear user,\n\nYou have been sent an invitation to add the institute XYZ in Edcerts application. This will allow you to receive certificate from the institute. Please click on the below link to continue:\n\nhttps://edcert.herokuapp.com \n\nRegards,\nTeam Edcerts'
-        };
+         emails.forEach((e, index) => {
 
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
-        });
+            var mailOptions = {
+                from: 'edcertsweb@gmail.com',
+                to: e,
+                subject: 'Invitation for receiving certificate | Edcerts',
+                text: 'Dear ' + name[index] + '\n\nYou have been sent an invitation to add the ' + req.session.name + ' in Edcerts application. This will allow you to receive certificate from the institute. Your institute id is ' + req.session.uid + '\nPlease click on the below link to continue:\n\n https://edcert.herokuapp.com/UpdatePublicKey/' + studentId[index] + ' \n\nRegards,\nTeam Edcerts'
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+        })
     });
 
     res.redirect('/Institute/Recipients')
