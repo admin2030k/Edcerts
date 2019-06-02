@@ -66,14 +66,12 @@
           </form>    
         </li>
         <li class="inls">
-            <div class="inls"><a  class="waves-effect waves-light btn-small hoverable white-text"href=""><span>Delete</span></a></div>
+            <div class="inls"><a  class="waves-effect waves-light btn-small hoverable white-text" onclick="CallDelete()"><span>Delete</span></a></div>
         </li>
       </ul>
-      <!-- <div><a href=""> <span>Invite</span></a></div> -->
-      
+      <!-- <div><a href=""> <span>Invite</span></a></div> -->      
+    </div>  
     </div>
-  
-  </div>
 
 </body>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -129,6 +127,12 @@
 
 
   });
+</script>
+
+<script>
+  function CallDelete() {
+    document.forms["deleteRecepientList"].submit();
+  }
 </script>
 
 </html>
