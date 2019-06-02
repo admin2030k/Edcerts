@@ -215,7 +215,12 @@ table {
 .card-background,
 h5,
 #Fields {
+  margin-top: 20px;
   margin-left: 2%;
+}
+
+.center .spaces-text{
+  padding-bottom: 30px;
 }
 
 #CertOptions{
@@ -271,6 +276,17 @@ nav .input-field label:focus {
   margin-top: 10px;
 }
 
+.spaces-text{
+  margin-top: 4px !important;
+  margin-bottom: 4px !important;
+}
+
+
+.spaces-logo{
+  margin-right: 0 ;
+  margin-left: 40px ;
+}
+
 .spaces-all{
   margin-right: 10px;
   margin-top: 10px;
@@ -281,11 +297,15 @@ nav .input-field label:focus {
 
   background-color: white;
   min-width: 15vw;
-  max-width: 65vw;
+  max-width: 60vw;
   min-height: 140vh;
   max-height: 140vh;
   margin-left: auto;
   margin-right: auto;
+}
+
+#A4Layout{
+  
 }
 
 .textColor{
@@ -304,13 +324,26 @@ nav .input-field label:focus {
   height: 100px;
 }
 
+.pp{
+  margin-top: 20px;
+    font-size: 16px;
+    margin-left: 42px;
+
+}
+
+
+.hsix{
+  margin-left: 40px;
+  font-size: 20px;
+}
+
 #logo {
-
-  margin-left: 35%;
-
-  position: relative;
+  display: inline;
+  /* margin-left: 35%; */
+  margin-top:40px;
+  /* position: relative; */
   z-index: 1;
-  width: 30%;
+  width: 20%;
   height: auto;
 }
 
