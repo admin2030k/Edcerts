@@ -2,75 +2,72 @@ var mongoose = require('mongoose');
 var express = require('express');
 var User = require('../models/entity');
 var certificate = require('../models/certificate');
+var degree = require('../models/degree');
 const bcrypt = require('bcryptjs');
 var XLSX = require('xlsx')
 var recepient = require('../models/recepient');
 var student = require('../models/student_info');
 var nodemailer = require('nodemailer');
-const uuidv4 = require('uuid/v4');
+var crypto = require('crypto')
 var blockchain = require('../controllers/BlockChain')
+var merkle = require('../controllers/merkletree')
+var fastRoot = require('../controllers/fastRoot')
+var merkleProof = require('../controllers/proof')
 
 
 module.exports.UpdatePublicKey = function (req, res) {
     const id = req.params.id;
     const pkey = req.params.pkey;
-    const email = req.params.email;
-    // console.log("id", id);
-    // console.log("pkey", pkey);
-    // console.log("email", email);
 
-    student.updateOne({
-        'data.id': id
-    }, {
-        '$set': {
-            'data.$.pkey': pkey,
-        }
-    }, (err, result) => {
-        if (err) {
-            console.log(err);
-            throw err;
-        } else {
-            console.log("Result---->", result);
-            console.log("Public Key Updated");
-        }
-    })
-
-
-
-    temp = {};
-    temp['response'] = "Ok";
-    res.send(temp)
-}
-
-
-module.exports.GetCertificates = function (req, res) {
-
-    const pkey = req.params.pkey;
-    console.log("get certificate called");
+    console.log("id", id);
     console.log("pkey", pkey);
 
-    cert1 = {
-        Recepient: 'Hashir Baig',
-        'Last Name': 'Baig',
-        CGPA: 2.9,
-        'Date of Graduation': 43470,
-        Batch: 2015,
-        Email: 'Hashirbaig@gmail.com',
-        Program: 'BSAF',
-        Institution: 'FAST',
-        'Public Key': '0x6e6F07247161E22E1a259196F483cCEC21dfBfF9'
-    }
+    // Assuming Public Key is now updated
+    var institutePubKey = "0x6e6f07247161e22e1a259196f483ccec21dfbff9"
+    console.log("Publishing transaction on Blockchain from Central Authority to Institute")
+    fromPubKey = process.env.WALLET_ADDRESS
+    fromPvtKey = process.env.WALLET_PRIVATE_KEY
+    toPubKey = institutePubKey
+    data = ""
+    const txid = blockchain.publishOnBlockchain(data, fromPvtKey, fromPubKey, toPubKey, 5)
+    console.log(txid)
 
-    cert = []
-    cert.push(cert1);
-    cert.push(cert1);
-
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(cert));
-
-
+    res.send(200)
 }
 
+
+module.exports.GetDegrees = function (req, res) {
+    const pkey = req.params.pkey;
+    console.log("get certificate called");
+    console.log("pubkey", pkey);
+    degree.find({
+        'degree.Public Key': pkey
+    }, function (err, res2) {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log(res2)
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(res2));
+        }
+    })
+}
+
+
+module.exports.ViewDegree = function (req, res) {
+    const degreeid = req.params.degreeid
+    console.log("View Degree called!")
+    console.log("Degree ID", degreeid)
+    degree.findById(degreeid, function (err, res2) {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log(res2)
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(res2));
+        }
+    })
+}
 
 
 module.exports.CreateDegree = function (req, res) {
@@ -139,20 +136,13 @@ module.exports.setPassword = function (req, res) {
 
 module.exports.uploadRecepient = function (req, res) {
 
-
-    console.log("Server Side:  Upload Recepient");
+    console.log("in server side of upload ercep");
 
     var workbook = XLSX.readFile('./public/Uploads/' + req.file.filename);
     var sheet_name_list = workbook.SheetNames;
     var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+    console.log(xlData);
 
-    // Converting Excel Data to JSON and Adding ID  & Password against each student.
-
-    xlData.forEach((row) => {
-        var temp = uuidv4();;
-        row['id'] = temp
-        row['pkey'] = ""
-    })
 
     let studentInfo = new student({
         data: xlData,
@@ -165,12 +155,15 @@ module.exports.uploadRecepient = function (req, res) {
             console.log(err);
             throw err;
         } else {
-            console.log("student info added");
+            console.log(result);
 
         }
     });
 
-    // Storing Recepient's Data in Recepient Table 
+    console.log(xlData.length)
+    /*
+    var wb = XLSX.readFile("./public/Uploads/"+req.file.filename);
+    console.log(wb);*/
 
     let newRecepient = new recepient({
         Status: "Pending",
@@ -197,6 +190,54 @@ module.exports.uploadRecepient = function (req, res) {
 
 }
 
+module.exports.DeleteDegreeTemplate = function (req, res) {
+
+    recordToDelete = req.body.rec;
+
+
+
+    if (recordToDelete instanceof String || typeof recordToDelete === 'string') {
+        certificate.findOneAndDelete({
+            _id: recordToDelete
+        }, (err, result) => {
+            if (err) {
+                console.log(err);
+                throw err;
+            } else {
+                console.log("Record Deleted");
+                console.log(result);
+                res.redirect('Institute/Certificate/Draft')
+
+            }
+
+        })
+    } else {
+
+
+
+        certificate.deleteMany({
+            _id: {
+                $in: recordToDelete
+            }
+        }, (err, result) => {
+
+            if (err) {
+                console.log(err);
+                throw err;
+            } else {
+                console.log("Record Deleted");
+                console.log(result);
+                res.redirect('Institute/Certificate/Draft')
+
+            }
+
+
+        })
+
+    }
+
+}
+
 
 
 module.exports.loadRecepient = function (req, res) {
@@ -212,8 +253,12 @@ module.exports.loadRecepient = function (req, res) {
         });
     })
 
+
 }
 
+function sha256(data) {
+    return crypto.createHash('sha256').update(data).digest()
+}
 
 module.exports.IssueCertificates = function (req, res) {
     console.log(req.body.templateid);
@@ -232,11 +277,7 @@ module.exports.IssueCertificates = function (req, res) {
             throw err;
         }
 
-
-
         var JSONDATA = [];
-
-
         for (let index = 0; index < xlData.length; index++) {
 
             var temp = {};
@@ -248,26 +289,127 @@ module.exports.IssueCertificates = function (req, res) {
             });
             temp['Public Key'] = "0x6e6F07247161E22E1a259196F483cCEC21dfBfF9"
             JSONDATA.push(temp);
-
         };
+
         console.log(JSONDATA);
 
-        const root = blockchain.computeMerkleRoot(JSONDATA, "Data.xlsx")
-        console.log(root)
+        // Computing hashes of JSONDATA to construct merkle tree
+        var certHashes = []
+        for (let i = 0; i < JSONDATA.length; ++i) {
+            dataHash = sha256(JSON.stringify(JSONDATA[i]))
+            certHashes.push(dataHash)
+        }
+
+        console.log("\nHashes of Certificates\n")
+        console.log(certHashes.map(x => x.toString('hex')))
+
+        var tree = merkle(certHashes, sha256)
+
+        console.log("Printing Tree in Hex:\n")
+        console.log(tree.map(x => x.toString('hex')))
+
+        var root = fastRoot(certHashes, sha256)
+        console.log("Root:\t" + root.toString('hex'))
+
+        // Computing Proofs for each Certificate
+        var proofs = []
+        for (let i = 0; i < certHashes.length; ++i) {
+            var proof = merkleProof(tree, certHashes[i])
+            if (proof === null) {
+                console.error('No proof exists!')
+            }
+            proofs.push(proof)
+            JSONDATA[i]['Proof'] = proof.map(x => x && x.toString('hex'))
+            console.log(JSONDATA[i])
+            console.log("Proof for Certificate " + i + "\n")
+            console.log(proof.map(x => x && x.toString('hex')))
+        }
+
+        // Verifying Proof for each Certificate
+        for (let i = 0; i < certHashes.length; ++i) {
+            console.log(merkleProof.verify(proofs[i], certHashes[i], root, sha256))
+        }
+
+        for (let i = 0; i < JSONDATA.length; ++i) {
+            var newdegree = new degree({
+                degree: JSONDATA[i]
+            });
+            newdegree.save(function (err, result) {
+                if (err) {
+                    console.log(err);
+                    throw err;
+                } else {
+                    console.log(result);
+                }
+            });
+        }
 
         console.log("Publishing root on Blockchain")
-        const txid = blockchain.publishOnBlockchain(root, 5)
+        fromPubKey = process.env.WALLET_ADDRESS
+        fromPvtKey = process.env.WALLET_PRIVATE_KEY
+        toPubKey = process.env.DESTINATION_WALLET_ADDRESS
+        const txid = blockchain.publishOnBlockchain(root.toString('hex'), fromPvtKey, fromPubKey, toPubKey, 5)
         console.log(txid)
+
+        for (let i = 0; i < JSONDATA.length; ++i) {
+            JSONDATA[i]['instituteTxId'] = txid
+            console.log("Certificates with transactions " + i + "\n")
+            console.log(JSONDATA[i])
+        }
+
     })
     res.redirect('back')
 }
 
+module.exports.VerifyDegree = function (req, res) {
+    // root will actually be obtained from the transaction (op return field) from institute's public key to itself
+    /*  
+        Steps:
+        1. get certificate from db using degree id
+        2. get institute public key from degree
+        3. ensure that it is verified by HEC
+        4. verify its proof 
+    */
+    degreeid = req.params.degreeid
+    root = "e9e656451007174ea2b2c472bfb9ae9c833cd16bf5d3c2a677aed05d160dbcd0"
+    hash = "fe1819312c91efc975040ad0bd9eedd01fa7701a0a96f8df26c861bc1cd006c6"
+    degree.findById(degreeid, function (err, res2) {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("Verifying!")
+            proof = res2.degree[0].Proof
+
+            // convert JSON object to String
+            var proofBuf = []
+            for (v in proof) {
+                var jsonStr = JSON.stringify(v);
+                const buf = Buffer.from(jsonStr);
+                proofBuf.push(buf)
+            }
+
+            // read json string to Buffer
+
+
+            console.log(proofBuf)
+            console.log(proofBuf.map(x => x && x.toString('hex')))
+            // var data = []
+            // proof.forEach(e => {
+            //     data.push(new Buffer(e, 'hex'))
+            // })
+            // console.log(data)
+            // proof = proof[0].map(x => new Buffer(x, 'hex'))
+            // console.log(proof.map(x => x && x.toString('hex')))
+            // console.log(merkleProof.verify(proof, new Buffer(hash, 'hex'), new Buffer(root, 'hex'), sha256))
+            res.send(proof.map(x => x && x.toString('hex')))
+        }
+    })
+}
+
+
 module.exports.sendEmail = function (req, res) {
     console.log("Send Email!");
     var emails = [];
-    var studentId = [];
-    var name = [];
-
     student.find({
         InstituteID: req.session.uid
     }, {
@@ -277,28 +419,15 @@ module.exports.sendEmail = function (req, res) {
         data_arr = arr.map(function (u) {
             return u.data;
         });
-
-        console.log(data_arr);
-
         for (i = 0; i < data_arr.length; i++) {
             for (j = 0; j < data_arr[i].length; j++) {
                 emails.push(data_arr[i][j].Email);
-                studentId.push(data_arr[i][j].id);
-                name.push(data_arr[i][j].Recepient);
-
             }
         }
         if (emails.length == 0) {
             console.log("No recipients found for sending Invites!");
             return;
         }
-
-        console.log("Student id ->", studentId)
-        console.log("Student email ->", emails)
-
-        console.log("=========================")
-
-
         email_str = emails.toString();
         console.log(email_str);
 
@@ -310,42 +439,81 @@ module.exports.sendEmail = function (req, res) {
             }
         });
 
+        var mailOptions = {
+            from: 'edcertsweb@gmail.com',
+            to: email_str,
+            subject: 'Invitation for receiving certificate | Edcerts',
+            text: 'Dear user,\n\nYou have been sent an invitation to add the institute XYZ in Edcerts application. This will allow you to receive certificate from the institute. Please click on the below link to continue:\n\nhttps://edcert.herokuapp.com \n\nRegards,\nTeam Edcerts'
+        };
 
-
-        emails.forEach((e, index) => {
-
-            var mailOptions = {
-                from: 'edcertsweb@gmail.com',
-                to: e,
-                subject: 'Invitation for receiving certificate | Edcerts',
-                text: 'Dear ' + name[index] + '\n\nYou have been sent an invitation to add the ' + req.session.name + ' in Edcerts application. This will allow you to receive certificate from the institute. Your institute id is ' + req.session.uid + '\nPlease click on the below link to continue:\n\n https://edcert.herokuapp.com/UpdatePublicKey/' + studentId[index] + ' \n\nRegards,\nTeam Edcerts'
-            };
-
-            transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log('Email sent: ' + info.response);
-                }
-            });
-
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
         });
-
-
-
     });
 
     res.redirect('/Institute/Recipients')
 }
 
 
-module.exports.LoadCertificateIssued= function (req, res) {
+module.exports.LoadCertificateIssued = function (req, res) {
     var InstituteName = req.session.name;
-    
+
     res.render('Institute/CertificateIssued', {
-      InstituteName
+        InstituteName
     });
 
 
 
-  }
+}
+
+module.exports.DeleteRecepientList = function (req, res) {
+
+    console.log("In Deete recep")
+    recordToDelete = req.body.rec;
+
+
+
+    if (recordToDelete instanceof String || typeof recordToDelete === 'string') {
+        recepient.findOneAndDelete({
+            _id: recordToDelete
+        }, (err, result) => {
+            if (err) {
+                console.log(err);
+                throw err;
+            } else {
+                console.log("Record Deleted");
+                console.log(result);
+                res.redirect('Institute/Recipients')
+
+            }
+
+        })
+    } else {
+
+
+
+        recepient.deleteMany({
+            _id: {
+                $in: recordToDelete
+            }
+        }, (err, result) => {
+
+            if (err) {
+                console.log(err);
+                throw err;
+            } else {
+                console.log("Record Deleted");
+                console.log(result);
+                res.redirect('Institute/Recipients')
+
+            }
+
+
+        })
+
+    }
+}

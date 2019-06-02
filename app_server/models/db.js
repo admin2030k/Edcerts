@@ -6,8 +6,7 @@ var dbURI = 'mongodb://localhost:27017/Edcert';
 
 if (process.env.NODE_ENV === 'production') {
 
-    var dbURI = 'mongodb://Ahmad:edcert123@ds135196.mlab.com:35196/edcert';
-    
+    var dbURI = 'mongodb://Ahmad:edcert123@ds135196.mlab.com:35196/edcert';    
 }
 mongoose.connect(dbURI);
 

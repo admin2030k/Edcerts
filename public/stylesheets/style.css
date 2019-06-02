@@ -11,6 +11,13 @@
   color: white !important;
 }
 
+.card-panel{
+  position: relative;
+}
+
+.top-padding{
+  padding-top: 15vh !important;
+}
 /* .row .input-field {
   background-color: rgba(255, 255, 255, 0.2) !important;
   left: -12px !important;
@@ -282,7 +289,40 @@ nav .input-field label:focus {
 }
 
 #chart_div {
-  margin-left: 20%;
+  /* margin-left: 30vw; */
+  width: 600px !important;
+  margin-left: 5% !important;
+}
+
+.statistics{
+  /* margin-top: 10px !important; */
+  padding-top: 40px !important;
+  margin-left: -10px !important; 
+}
+
+.main-center{
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 10vh;
+  width: 600px !important;
+}
+
+.main-center-wide{
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 10vh;
+  width: 900px !important;
+}
+
+.main-center-long{
+  text-align: left;
+  margin: 0 auto;
+  margin-top: 10vh;
+  width: 800px !important;
+}
+
+.padding-text-large{
+  padding: 20px;
 }
 
 .modalDegreeCreate {

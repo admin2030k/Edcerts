@@ -58,7 +58,8 @@ const InitialCredentialUpdate = function (req, res, next) {
     res.redirect('/');
     if (req.session.Activity != 1)
       res.redirect('/Institute/Dashboard');
-  } else
+  }
+  else
     next();
 }
 
@@ -142,9 +143,14 @@ router.get('/Institute/Dashboard', checkIfInstituteTier, function (req, res) {
   });
 });
 
-router.get('/Institute/Recipients', checkIfInstituteTier, Institute.loadRecepient);
+router.get('/Institute/Recipients', checkIfInstituteTier  , Institute.loadRecepient);
 
-router.get('/Institute/Certificate/Issued',checkIfInstituteTier,Institute.LoadCertificateIssued);
+router.get('/Institute/Certificate/Issued', function (req, res) {
+  var InstituteName = req.session.name;
+  res.render('Institute/CertificateIssued', {
+    InstituteName
+  });
+});
 
 router.get('/Institute/Certificate/Draft', checkIfInstituteTier, Institute.DraftCertificate);
 
@@ -160,9 +166,18 @@ router.post('/SetPassword', checkIfInstituteTier, Institute.setPassword);
 
 router.post('/sendEmail', checkIfInstituteTier, Institute.sendEmail);
 
+
+router.get('/GetDegrees/:pkey', checkIfInstituteTier, Institute.GetDegrees);
+
+router.post('/DeleteDegreeTemplate', checkIfInstituteTier, Institute.DeleteDegreeTemplate);
+
+router.post('/DeleteRecepientList', checkIfInstituteTier, Institute.DeleteRecepientList);
+
+
 router.patch('/UpdatePublicKey/:id/:email/:pkey', Institute.UpdatePublicKey);
 
-router.get('/GetCertificate/:pkey', checkIfInstituteTier, Institute.GetCertificates);
+router.get('/ViewDegree/:degreeid', Institute.ViewDegree);
 
+router.get('/VerifyDegree/:degreeid', Institute.VerifyDegree);
 
 module.exports = router;

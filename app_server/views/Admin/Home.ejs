@@ -27,24 +27,31 @@ function drawChart() {
 
   // Set chart options
   var options = {'title':'Number of Central Authorities in each Province',
-                 'width':800,
-                 'height':600};
+                 'width':600,
+                 'height':400,
+                 'backgroundColor': 'transparent'
+                };
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
   chart.draw(data, options);
 }
 </script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
 </head>
 <body>
-    
+  <div id="particles-js"></div> <!-- stats - count particles -->
+
   <% include /partials/navbar %>
-  <div class="center">
-<h3>Statistics</h3>
-<div id="chart_div"></div></div>
+  <div >
+    <div class="card center main-center">
+        <h4 class="statistics">Statistics</h4>
+        <div id="chart_div" class="center"></div></div>    
+    </div>
  </body>
   
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+ <% include ../partials/Footer %>
 </html>
