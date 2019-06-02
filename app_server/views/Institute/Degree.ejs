@@ -1,0 +1,93 @@
+<% include /partials/Header %>
+
+</head>
+
+<body>
+    <% include /partials/navbar %>
+    
+    <br><br>
+    <div class="center">
+        <div class="chip">
+            <a  onclick="foo();" data-id="<%=degreeid%>"  id="degreeverifier">Verify</a>
+        </div>
+    
+    </div>
+    <br>
+
+    <div id="A4Layout">
+        <img src="/images/logo.png" id="logo" alt="">
+        <div id="Fields">
+            <h1>
+            It is to certify that
+            <h3 class="center"> 
+                <%= res2.Recepient %>
+            </h3>
+            has successfully completed  <%= res2.Program %> from <%= res2.Institution%> 
+        </h1>
+        </div>
+    </div>
+
+    <div id="modal1" class="modal">
+            <div class="modal-content">
+              <h4>Verifying Certificate</h4>
+              <p>Edcerts</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+            </div>
+          </div>
+
+
+
+</body>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.modal').modal();
+    });
+</script>
+
+<script>
+    $('#IssueCertBtn').on('click', () => {
+
+        $('#templateid').val(window.location.pathname.slice(23))
+
+        $('#IssueCertificatesForm').submit();
+
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('select').material_select();
+    });
+</script>
+
+<script>
+
+
+
+
+
+function foo() {
+
+    var title=$('#degreeverifier').attr("data-id");
+
+    
+    $.ajax({
+    url:'/VerifyDegree/'+title,
+    type: 'GET',
+    success: function (result) {
+        alert(result);
+      
+}
+});
+
+
+    $('#modal1').modal('open');
+}
+</script>
+
+
+</html>

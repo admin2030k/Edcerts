@@ -6,17 +6,23 @@
       <div id="particles-js"></div> <!-- stats - count particles -->
       <% include /partials/navbar %>
       <div class="center top-padding">
+
             <div class="card main-center-long top-padding">
                   <div class="center row s12">
                         <b>Pass Phrase</b><br>
-                        <div id="PassPhrase">
-                              <p id="PassPhraseVal"></p>
-                        </div><br>
-                        <a href="/Institute/Dashboard" class="btn-small ">Submit</a>
-                        &nbsp; <a href="/Institute/landing2" class="btn-small "><i class="material-icons">replay</a>
+                  <div id="PassPhrase">
+                        <p id="PassPhraseVal"></p>
+                  </div><br>
+                  <p hidden id="pubkey"></p>
+                  <a class="btn-small " onclick="storePKey();">Submit</a>
+                  <!--href="/Institute/Dashboard"-->
+                  &nbsp; <a href="/Institute/landing2" class="btn-small "><i class="material-icons">replay</a>
+
                   </div>
 
             </div>
+   
+      </div>
 
 
 </body>
@@ -26,13 +32,39 @@
 <script charset="utf-8" src="https://cdn.ethers.io/scripts/ethers-v4.min.js" type="text/javascript">
 </script>
 <script>
-
       $(document).ready(function () {
-            var wallet = ethers.utils.HDNode.entropyToMnemonic(ethers.utils.randomBytes(16));
-            console.log(wallet)
-            $('#PassPhraseVal').text(wallet)
-      });
+            var mnemonic = ethers.utils.HDNode.entropyToMnemonic(ethers.utils.randomBytes(16));
 
+            $('#PassPhraseVal').text(mnemonic)
+            var wallet = ethers.Wallet.fromMnemonic(mnemonic)
+            //console.log(wallet.address)
+            //console.log(wallet.privateKey)   
+            $('#pubkey').text(wallet.address)
+
+            // console.log();
+      });
 </script>
 
 </html>
+
+<script>
+      function storePKey() {
+
+
+            var title = $('#pubkey').text();
+            
+            $.ajax({
+                  url: '/UpdateInstitutePublicKey/' + title,
+                  type: 'PATCH',
+                  success: function (result) {
+                        if (result == "OK") {
+                              window.location = "/Institute/Dashboard"
+
+                        } else {
+                              alert("something went wrong");
+
+                        }
+                  }
+            });
+      }
+</script>
