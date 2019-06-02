@@ -8,7 +8,7 @@
 
 
 <div id="Form2"> 
-   <form class="col s10" method="POST" action="/addUniversity">
+   <form class="col s10" name="form2"  method="POST" onsubmit="return required()" action="/addUniversity">
 
   
   <div class="row">
@@ -38,7 +38,7 @@
   <div class="row">
       <div class="input-field Form2Field hoverable col s10">
           <i class="material-icons prefix Form2Field ">replay</i>
-          <input id="password2" type="password" class="validate">
+          <input id="password2" type="password" name="password2" class="validate">
           <label for="password2">Retype Password</label>
         </div>
   </div>
@@ -53,9 +53,33 @@
 </body>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-<script>
- 
-
-
+<script type="text/javascript">
+  function required() {
+    console.log("INSIDE");
+    if (document.form2.ID.value === "") {
+      alert("Please input a Value");
+      return false;
+    }
+    else if (document.form2.email.value === "") {
+      alert("Please input a Value");
+      return false;
+    }
+    else if (document.form2.password.value === "") {
+      alert("Please input a Value");
+      return false;
+    }
+    else if (document.form2.password2.value === "") {
+      alert("Please input a Value");
+      return false;
+    }
+    else if (document.form2.password.value !== document.form2.password2.value) {
+      alert("Please input a Value");
+      return false;
+    }
+    else 
+      return true;
+    
+  }
 </script>
+
 </html>

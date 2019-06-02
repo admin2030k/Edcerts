@@ -9,7 +9,7 @@
 
 
   <div id="Form2" >
-    <form class="col s10" name="form1" method="POST" onsubmit="required()" action="/addCentralAuthority">
+    <form class="col s10" name="form1"  method="POST" onsubmit="return required()"  action="/addCentralAuthority">
 
       <div class="row">
         <div class="row">
@@ -39,7 +39,7 @@
         <div class="row">
           <div class="input-field Form2Field hoverable col s10">
             <i class="material-icons prefix Form2Field ">replay</i>
-            <input id="password2" type="password" class="validate">
+            <input id="password2" name="password2" type="password" class="validate">
             <label for="password2">Retype Password</label>
           </div>
         </div>
@@ -49,18 +49,33 @@
 </body>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-<script>
+<script type="text/javascript">
   function required() {
-    var empt = document.form1.text1.value;
-    console.log("Comes in function");
-    if (empt === "") {
+    var empt = document.form1.ID.value;
+    
+    if (document.form1.ID.value === "") {
       alert("Please input a Value");
       return false;
     }
-    else {
-      alert('Code has accepted : you can try another');
-      return true;
+    else if (document.form1.email.value === "") {
+      alert("Please input a Value");
+      return false;
     }
+    else if (document.form1.password.value === "") {
+      alert("Please input a Value");
+      return false;
+    }
+    else if (document.form1.password2.value === "") {
+      alert("Please input a Value");
+      return false;
+    }
+    else if (document.form1.password.value !== document.form1.password2.value) {
+      alert("Please input a Value");
+      return false;
+    }
+    else 
+      return true;
+    
   }
 </script>
 </html>
