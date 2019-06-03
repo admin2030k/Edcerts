@@ -167,7 +167,7 @@ router.post('/SetPassword', checkIfInstituteTier, Institute.setPassword);
 router.post('/sendEmail', checkIfInstituteTier, Institute.sendEmail);
 
 
-router.get('/GetDegrees/:pkey', checkIfInstituteTier, Institute.GetDegrees);
+router.get('/GetDegrees/:pkey', Institute.GetDegrees);
 
 router.post('/DeleteDegreeTemplate', checkIfInstituteTier, Institute.DeleteDegreeTemplate);
 

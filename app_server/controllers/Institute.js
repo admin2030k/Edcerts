@@ -14,6 +14,11 @@ var merkle = require('../controllers/merkletree')
 var fastRoot = require('../controllers/fastRoot')
 var merkleProof = require('../controllers/proof')
 const uuidv4 = require('uuid/v4');
+//const
+  //  Web3 = require('web3')
+const https = require('https')
+
+
 
 module.exports.UpdatePublicKey = function (req, res) {
     const id = req.params.id;
@@ -244,6 +249,16 @@ module.exports.uploadRecepient = function (req, res) {
 
 }
 
+
+function
+sha256(data) {
+
+    return
+    crypto.createHash('sha256').update(data).digest()
+
+}
+
+
 module.exports.DeleteDegreeTemplate = function (req, res) {
 
     recordToDelete = req.body.rec;
@@ -310,165 +325,521 @@ module.exports.loadRecepient = function (req, res) {
 
 }
 
-function sha256(data) {
-    return crypto.createHash('sha256').update(data).digest()
-}
 
-module.exports.IssueCertificates = function (req, res) {
-    console.log(req.body.templateid);
-    var pkey=req.body.passhrase;
+module.exports.IssueCertificates =
+    function (req,
+        res) {
 
-    pkey = pkey.substring(2, pkey.length)
+        console.log(req.body.templateid);
 
-    var walletaddress=req.body.walletaddress;
-    console.log("===================");
-    console.log(pkey)
-    console.log(walletaddress)
-    console.log("===================");
-    
-    var path = req.body.recepient + ".xlsx";
-    console.log(path);
+        var
+            path = req.body.recepient +
+            ".xlsx";
 
-    var workbook = XLSX.readFile('./public/Uploads/' + req.body.recepient + ".xlsx");
-    var sheet_name_list = workbook.SheetNames;
-    var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+        console.log(path);
 
-    certificate.findById({
-        _id: req.body.templateid
-    }, function (err, result) {
-        if (err) {
-            console.log(err);
-            throw err;
-        }
 
-        var JSONDATA = [];
-        for (let index = 0; index < xlData.length; index++) {
 
-            var temp = {};
-            const element = xlData[index];
+        var
+            workbook = XLSX.readFile('./public/Uploads/' +
+                req.body.recepient +
+                ".xlsx");
 
-            result.Fields.forEach((attribute) => {
-                var columnName = attribute;
-                temp[columnName] = element[attribute];
-            });
-            temp['Public Key'] = "0x6e6F07247161E22E1a259196F483cCEC21dfBfF9"
-            JSONDATA.push(temp);
-        };
+        var
+            sheet_name_list = workbook.SheetNames;
 
-        console.log(JSONDATA);
+        var
+            xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
 
-        // Computing hashes of JSONDATA to construct merkle tree
-        var certHashes = []
-        for (let i = 0; i < JSONDATA.length; ++i) {
-            dataHash = sha256(JSON.stringify(JSONDATA[i]))
-            certHashes.push(dataHash)
-        }
 
-        console.log("\nHashes of Certificates\n")
-        console.log(certHashes.map(x => x.toString('hex')))
 
-        var tree = merkle(certHashes, sha256)
+        certificate.findById({
 
-        console.log("Printing Tree in Hex:\n")
-        console.log(tree.map(x => x.toString('hex')))
+            _id: req.body.templateid
 
-        var root = fastRoot(certHashes, sha256)
-        console.log("Root:\t" + root.toString('hex'))
+        }, function (err,
+            result) {
 
-        // Computing Proofs for each Certificate
-        var proofs = []
-        for (let i = 0; i < certHashes.length; ++i) {
-            var proof = merkleProof(tree, certHashes[i])
-            if (proof === null) {
-                console.error('No proof exists!')
+            if (err) {
+
+                console.log(err);
+
+                throw err
+
             }
-            proofs.push(proof)
-            JSONDATA[i]['Proof'] = proof.map(x => x && x.toString('hex'))
-            console.log(JSONDATA[i])
-            console.log("Proof for Certificate " + i + "\n")
-            console.log(proof.map(x => x && x.toString('hex')))
-        }
 
-        // Verifying Proof for each Certificate
-        for (let i = 0; i < certHashes.length; ++i) {
-            console.log(merkleProof.verify(proofs[i], certHashes[i], root, sha256))
-        }
 
-        for (let i = 0; i < JSONDATA.length; ++i) {
-            var newdegree = new degree({
-                degree: JSONDATA[i]
-            });
-            newdegree.save(function (err, result) {
-                if (err) {
-                    console.log(err);
-                    throw err;
-                } else {
-                    console.log(result);
+
+            var
+                JSONDATA = [];
+
+            for (let
+                    index =
+                    0; index <
+                xlData.length; index++) {
+
+
+
+                var
+                    temp = {};
+
+                const
+                    element = xlData[index];
+
+
+
+                result.Fields.forEach((attribute) => {
+
+                    var
+                        columnName = attribute;
+
+                    temp[columnName] =
+                        element[attribute];
+
+                });
+
+                temp['Public Key'] =   "0x6e6F07247161E22E1a259196F483cCEC21dfBfF9"
+
+                JSONDATA.push(temp);
+
+            };
+
+
+            console.log(JSONDATA);
+
+
+
+            // Computing hashes of JSONDATA to construct merkle tree
+
+            var
+                certHashes = []
+
+            for (let
+                    i =
+                    0; i <
+                JSONDATA.length; ++i) {
+
+                dataHash =
+                    sha256(JSON.stringify(JSONDATA[i]))
+
+                certHashes.push(dataHash)
+
+            }
+
+
+
+            console.log("\nHashes of Certificates\n")
+
+            console.log(certHashes.map(x =>
+                x.toString('hex')))
+
+
+
+            var
+                tree = merkle(certHashes,
+                    sha256)
+
+
+
+            console.log("Printing Tree in Hex:\n")
+
+            console.log(tree.map(x =>
+                x.toString('hex')))
+
+
+
+            var
+                root = fastRoot(certHashes,
+                    sha256)
+
+            console.log("Root:\t" +
+                root.toString('hex'))
+
+
+
+            // Computing Proofs for each Certificate
+
+            var
+                proofs = []
+
+            for (let
+                    i =
+                    0; i <
+                certHashes.length; ++i) {
+
+                var
+                    proof = merkleProof(tree,
+                        certHashes[i])
+
+                if (proof ===
+                    null) {
+
+                    console.error('No proof exists!')
+
                 }
-            });
-        }
 
-        console.log("Publishing root on Blockchain")
-        fromPubKey = walletaddress
-        fromPvtKey = pkey//process.env.WALLET_PRIVATE_KEY
-        toPubKey = walletaddress//process.env.DESTINATION_WALLET_ADDRESS
-        const txid = blockchain.publishOnBlockchain(root.toString('hex'), fromPvtKey, fromPubKey, toPubKey, 5)
-        console.log(txid)
+                proofs.push(proof)
 
-        for (let i = 0; i < JSONDATA.length; ++i) {
-            JSONDATA[i]['instituteTxId'] = txid
-            console.log("Certificates with transactions " + i + "\n")
-            console.log(JSONDATA[i])
-        }
+                // JSONDATA[i]['Proof'] = proof.map(x => x && x.toString('hex'))
 
-    })
-    res.redirect('back')
-}
+                JSONDATA[i]['Proof'] =
+                    JSON.stringify(proof)
 
-module.exports.VerifyDegree = function (req, res) {
-    // root will actually be obtained from the transaction (op return field) from institute's public key to itself
-    /*  
-        Steps:
-        1. get certificate from db using degree id
-        2. get institute public key from degree
-        3. ensure that it is verified by HEC
-        4. verify its proof 
-    */
-    degreeid = req.params.degreeid
-    root = "e9e656451007174ea2b2c472bfb9ae9c833cd16bf5d3c2a677aed05d160dbcd0"
-    hash = "fe1819312c91efc975040ad0bd9eedd01fa7701a0a96f8df26c861bc1cd006c6"
-    degree.findById(degreeid, function (err, res2) {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("Verifying!")
-            proof = res2.degree[0].Proof
+                console.log(JSONDATA[i])
 
-            // convert JSON object to String
-            var proofBuf = []
-            for (v in proof) {
-                var jsonStr = JSON.stringify(v);
-                const buf = Buffer.from(jsonStr);
-                proofBuf.push(buf)
+                console.log("Proof for Certificate " +
+                    i +
+                    "\n")
+
+                console.log(proof.map(x =>
+                    x && x.toString('hex')))
+
             }
 
-            // read json string to Buffer
+
+            // Verifying Proof for each Certificate
+
+            for (let
+                    i =
+                    0; i <
+                certHashes.length; ++i) {
+
+                console.log(merkleProof.verify(proofs[i],
+                    certHashes[i],
+                    root,
+                    sha256))
+
+            }
 
 
-            console.log(proofBuf)
-            console.log(proofBuf.map(x => x && x.toString('hex')))
-            // var data = []
-            // proof.forEach(e => {
-            //     data.push(new Buffer(e, 'hex'))
-            // })
-            // console.log(data)
-            // proof = proof[0].map(x => new Buffer(x, 'hex'))
-            // console.log(proof.map(x => x && x.toString('hex')))
-            // console.log(merkleProof.verify(proof, new Buffer(hash, 'hex'), new Buffer(root, 'hex'), sha256))
-            res.send(proof.map(x => x && x.toString('hex')))
-        }
-    })
-}
+
+            console.log("Publishing root on Blockchain")
+
+            fromPubKey =
+                process.env.WALLET_ADDRESS
+
+            fromPvtKey =
+                process.env.WALLET_PRIVATE_KEY
+
+            toPubKey =
+                process.env.DESTINATION_WALLET_ADDRESS
+
+            const
+                txid = blockchain.publishOnBlockchain(root.toString('hex'),
+                    fromPvtKey,
+                    fromPubKey, toPubKey,
+                    5)
+
+            // console.log(txid)
+
+
+
+            txid.then(function (res) {
+
+                for (let
+                        i =
+                        0; i <
+                    JSONDATA.length; ++i) {
+
+                    JSONDATA[i]['instituteTxHash'] =
+                        res
+
+                    console.log("Certificates with transactions " +
+                        i +
+                        "\n")
+
+                    console.log(JSONDATA[i])
+
+                }
+
+
+
+                for (let
+                        i =
+                        0; i <
+                    JSONDATA.length; ++i) {
+
+                    var
+                        newdegree = new
+                    degree({
+
+                        degree: JSONDATA[i]
+
+                    });
+
+                    newdegree.save(function (err,
+                        result) {
+
+                        if (err) {
+
+                            console.log(err);
+
+                            throw err;
+
+                        } else {
+
+                            console.log(result);
+
+                        }
+
+                    });
+
+                }
+
+            }, function (err) {
+
+                console.log(err)
+
+            })
+
+
+        })
+
+        res.redirect('back')
+
+    }
+
+
+
+    module.exports.VerifyDegree =
+    function (req,
+        res) {
+
+        // root will actually be obtained from the transaction (op return field) from institute's public key to itself
+
+        /* 
+
+        Steps:
+
+        1. get certificate from db using degree id
+
+        2. get institute public key from degree
+
+        3. ensure that it is verified by HEC
+
+        4. verify its proof 
+
+        */
+
+        degreeid =
+            req.params.degreeid
+
+        // hash = "86f83489f61f468c30d6cf7578fcab6dad0d73ff0fc005c5424c619996f40a6b"
+
+        // root = "e9e656451007174ea2b2c472bfb9ae9c833cd16bf5d3c2a677aed05d160dbcd0"
+
+        degree.findById(degreeid,
+            function (err,
+                res2) {
+
+                if (err) {
+
+                    console.log(err)
+
+                } else {
+
+                    console.log("Verifying!")
+
+                    proof =
+                        res2.degree[0].Proof
+
+
+
+                    // Calculate Degree Hash
+
+                    deg =
+                        res2.degree[0]
+
+                    txhash =
+                        deg.instituteTxHash
+
+                    delete
+                    deg["Proof"]
+
+                    delete
+                    deg["instituteTxHash"]
+
+                    console.log(deg)
+
+                    console.log("Degree Hash")
+
+                    hash =
+                        sha256(JSON.stringify(deg))
+
+                    console.log(hash)
+
+
+                    // Retrieve Merkle Root
+
+                    // 
+                    https: //api-rinkeby.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=0x55969c2660e26a21ebf531f6ea94fe6a4e672bc33154587422d98473045041c5&apikey=899QCPY36YQZFIC6Q8FXZGZM5R7RU1U1C9
+
+
+
+                        var options = {
+                                hostname: 'api-rinkeby.etherscan.io',
+                                port: 443,
+                                path: '/api?module=proxy&action=eth_getTransactionByHash&txhash=' +txhash + '&apikey=899QCPY36YQZFIC6Q8FXZGZM5R7RU1U1C9s',
+                                 method: 'GET'
+                            }
+
+
+                    const webreq = https.request(options, (webres) => {
+
+                            console.log(`statusCode:${webres.statusCode}`)
+
+
+                            webres.on('data', (d) => {
+
+                                // process.stdout.write(d)
+
+                                console.log(d)
+
+                                apires =
+                                    JSON.parse(d)
+
+                                if (!apires || !apires.result) {
+
+                                    res.send("false")
+
+                                    return;
+
+                                }
+
+                                extraData =
+                                    apires.result.input.substring(2,
+                                        apires.result.input.length)
+
+                                // apires = JSON.stringify(apires.result.input)
+
+                                tbl = {}
+
+                                tbl["30"] =
+                                    "0"
+
+                                tbl["31"] =
+                                    "1"
+
+                                tbl["32"] =
+                                    "2"
+
+                                tbl["33"] =
+                                    "3"
+
+                                tbl["34"] =
+                                    "4"
+
+                                tbl["35"] =
+                                    "5"
+
+                                tbl["36"] =
+                                    "6"
+
+                                tbl["37"] =
+                                    "7"
+
+                                tbl["38"] =
+                                    "8"
+
+                                tbl["39"] =
+                                    "9"
+
+                                tbl["61"] =
+                                    "a"
+
+                                tbl["62"] =
+                                    "b"
+
+                                tbl["63"] =
+                                    "c"
+
+                                tbl["64"] =
+                                    "d"
+
+                                tbl["65"] =
+                                    "e"
+
+                                tbl["66"] =
+                                    "f"
+
+                                hexStr =
+                                    ""
+
+                                extraData.match(/..?/g).map(value =>
+                                    hexStr += tbl[value])
+
+                                console.log(hexStr)
+
+                                root =
+                                    hexStr
+
+                                proof =
+                                    JSON.parse(proof)
+
+                                // console.log(proof)
+
+                                var
+                                    bufArr = []
+
+                                for (var
+                                        key in proof) {
+
+                                    console.log("iteration")
+
+                                    console.log(key)
+
+                                    if (proof[key])
+
+                                        bufArr.push(Buffer.from(proof[key]))
+
+                                    else
+
+                                        bufArr.push(null)
+
+                                    // if(data != null)
+
+                                    // proof.data = Buffer.from(data)
+
+                                }
+
+                                // root = "e9e656451007174ea2b2c472bfb9ae9c833cd16bf5d3c2a677aed05d160dbcd0"
+
+                                console.log(bufArr.map(x =>
+                                    x && x.toString('hex')))
+
+                                resBool =
+                                    merkleProof.verify(bufArr,
+                                        new Buffer(hash,
+                                            'hex'), new Buffer(root,
+                                            'hex'), sha256)
+
+                                console.log(resBool)
+
+                                res.send(resBool)
+
+                            })
+
+                        })
+
+
+                    webreq.on('error', (error) => {
+
+                        console.error(error)
+
+                    })
+
+
+                    webreq.end()
+
+                }
+
+            })
+
+    }
+
+
+
+
 
 
 module.exports.sendEmail = function (req, res) {
@@ -592,23 +963,62 @@ module.exports.DeleteRecepientList = function (req, res) {
 
 
 module.exports.UpdateInstitutePublicKey =function (req,res) {
-
+/*
     console.log(req.params.pkey);
 var pkey=req.params.pkey
   User.findOneAndUpdate({
          _id:req.session.uid
   },{$set:{PublicKey:pkey} }, (err, result) => {
-/*
+
+
+    
         var InstituteName = req.session.name;
 
         res.render('Institute/Recipients', {
             recep,
             InstituteName
-        });*/
+        });
 
         console.log(result);
     })
 
     res.send(200);
-    
+  */
+
+ const id = req.params.id;
+
+const pkey = req.params.pkey;
+
+
+
+console.log("id", id);
+
+console.log("pkey", pkey);
+
+
+// Assuming Public Key is now updated
+
+var institutePubKey = "0x6e6f07247161e22e1a259196f483ccec21dfbff9"
+
+console.log("Publishing transaction on Blockchain from Central Authority to Institute")
+
+fromPubKey = process.env.WALLET_ADDRESS
+
+fromPvtKey = process.env.WALLET_PRIVATE_KEY
+
+toPubKey = institutePubKey
+
+data = ""
+
+const txid = blockchain.publishOnBlockchain(data,
+     fromPvtKey,
+     fromPubKey, toPubKey,
+     5)
+
+console.log(txid)
+
+
+
+res.send(200)
+
 }
