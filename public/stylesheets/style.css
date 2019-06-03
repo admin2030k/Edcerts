@@ -223,6 +223,16 @@ h5,
   padding-bottom: 30px;
 }
 
+.bodys {
+  background-image: url("https://internetofbusiness.com/wp-content/uploads/2018/03/s3-news-tmp-980-blockchain-2x1-940-1.png");
+  background-repeat: round space;
+  background-attachment: fixed;
+}
+
+.statics{
+  position: absolute;
+}
+
 #CertOptions{
   padding-bottom: 10px;
   padding-top: 10px;
@@ -349,7 +359,7 @@ nav .input-field label:focus {
 
 #modal1 {
   margin-top: 2%;
-  height: 100%;
+  height: 25% !important;
 }
 .modal .modal-content {
   padding: 15px;
