@@ -400,6 +400,13 @@ module.exports.IssueCertificates =
 
                 temp['Public Key'] =   "0x6e6F07247161E22E1a259196F483cCEC21dfBfF9"
 
+                console.log("================")
+                console.log(JSONDATA)
+                console.log("================")
+
+
+
+
                 JSONDATA.push(temp);
 
             };
@@ -430,27 +437,21 @@ module.exports.IssueCertificates =
 
             console.log("\nHashes of Certificates\n")
 
-            console.log(certHashes.map(x =>
-                x.toString('hex')))
+            console.log(certHashes.map(x => x.toString('hex')))
 
 
 
-            var
-                tree = merkle(certHashes,
-                    sha256)
+            var tree = merkle(certHashes,sha256)
 
 
 
             console.log("Printing Tree in Hex:\n")
 
-            console.log(tree.map(x =>
-                x.toString('hex')))
+            console.log(tree.map(x => x.toString('hex')))
 
 
 
-            var
-                root = fastRoot(certHashes,
-                    sha256)
+            var root = fastRoot(certHashes,sha256)
 
             console.log("Root:\t" +
                 root.toString('hex'))
@@ -462,17 +463,11 @@ module.exports.IssueCertificates =
             var
                 proofs = []
 
-            for (let
-                    i =
-                    0; i <
-                certHashes.length; ++i) {
+            for (let i = 0; i < certHashes.length; ++i) {
 
-                var
-                    proof = merkleProof(tree,
-                        certHashes[i])
+                var proof = merkleProof(tree,  certHashes[i])
 
-                if (proof ===
-                    null) {
+                if (proof === null) {
 
                     console.error('No proof exists!')
 
@@ -482,36 +477,25 @@ module.exports.IssueCertificates =
 
                 // JSONDATA[i]['Proof'] = proof.map(x => x && x.toString('hex'))
 
-                JSONDATA[i]['Proof'] =
-                    JSON.stringify(proof)
+                JSONDATA[i]['Proof'] = JSON.stringify(proof)
 
                 console.log(JSONDATA[i])
 
-                console.log("Proof for Certificate " +
-                    i +
-                    "\n")
+                console.log("Proof for Certificate " + i +"\n")
 
-                console.log(proof.map(x =>
-                    x && x.toString('hex')))
+                console.log(proof.map(x => x && x.toString('hex')))
 
             }
 
 
             // Verifying Proof for each Certificate
 
-            for (let
-                    i =
-                    0; i <
-                certHashes.length; ++i) {
+            for (let i = 0; i < certHashes.length; ++i) {
 
                 console.log(merkleProof.verify(proofs[i],
-                    certHashes[i],
-                    root,
-                    sha256))
+                    certHashes[i],root,sha256))
 
             }
-
-
 
             console.log("Publishing root on Blockchain")
 
@@ -525,10 +509,7 @@ module.exports.IssueCertificates =
                 process.env.DESTINATION_WALLET_ADDRESS
 
             const
-                txid = blockchain.publishOnBlockchain(root.toString('hex'),
-                    fromPvtKey,
-                    fromPubKey, toPubKey,
-                    5)
+                txid = blockchain.publishOnBlockchain(root.toString('hex'),fromPvtKey,fromPubKey, toPubKey, 5)
 
             // console.log(txid)
 
@@ -536,17 +517,11 @@ module.exports.IssueCertificates =
 
             txid.then(function (res) {
 
-                for (let
-                        i =
-                        0; i <
-                    JSONDATA.length; ++i) {
+                for (let i = 0; i < JSONDATA.length; ++i) {
 
-                    JSONDATA[i]['instituteTxHash'] =
-                        res
+                    JSONDATA[i]['instituteTxHash'] = res
 
-                    console.log("Certificates with transactions " +
-                        i +
-                        "\n")
+                    console.log("Certificates with transactions " + i + "\n")
 
                     console.log(JSONDATA[i])
 
@@ -554,21 +529,15 @@ module.exports.IssueCertificates =
 
 
 
-                for (let
-                        i =
-                        0; i <
-                    JSONDATA.length; ++i) {
+                for (let i = 0; i < JSONDATA.length; ++i) {
 
-                    var
-                        newdegree = new
-                    degree({
+                    var newdegree = new degree({
 
                         degree: JSONDATA[i]
 
                     });
 
-                    newdegree.save(function (err,
-                        result) {
+                    newdegree.save(function (err, result) {
 
                         if (err) {
 
@@ -602,8 +571,7 @@ module.exports.IssueCertificates =
 
 
     module.exports.VerifyDegree =
-    function (req,
-        res) {
+    function (req, res) {
 
         // root will actually be obtained from the transaction (op return field) from institute's public key to itself
 
@@ -621,16 +589,13 @@ module.exports.IssueCertificates =
 
         */
 
-        degreeid =
-            req.params.degreeid
+        degreeid = req.params.degreeid
 
         // hash = "86f83489f61f468c30d6cf7578fcab6dad0d73ff0fc005c5424c619996f40a6b"
 
         // root = "e9e656451007174ea2b2c472bfb9ae9c833cd16bf5d3c2a677aed05d160dbcd0"
 
-        degree.findById(degreeid,
-            function (err,
-                res2) {
+        degree.findById(degreeid, function (err, res2) {
 
                 if (err) {
 
@@ -640,31 +605,25 @@ module.exports.IssueCertificates =
 
                     console.log("Verifying!")
 
-                    proof =
-                        res2.degree[0].Proof
+                    proof = res2.degree[0].Proof
 
 
 
                     // Calculate Degree Hash
 
-                    deg =
-                        res2.degree[0]
+                    deg = res2.degree[0]
 
-                    txhash =
-                        deg.instituteTxHash
+                    txhash = deg.instituteTxHash
 
-                    delete
-                    deg["Proof"]
+                    delete deg["Proof"]
 
-                    delete
-                    deg["instituteTxHash"]
+                    delete deg["instituteTxHash"]
 
                     console.log(deg)
 
                     console.log("Degree Hash")
 
-                    hash =
-                        sha256(JSON.stringify(deg))
+                    hash = sha256(JSON.stringify(deg))
 
                     console.log(hash)
 
@@ -695,8 +654,7 @@ module.exports.IssueCertificates =
 
                                 console.log(d)
 
-                                apires =
-                                    JSON.parse(d)
+                                apires = JSON.parse(d)
 
                                 if (!apires || !apires.result) {
 
@@ -706,83 +664,60 @@ module.exports.IssueCertificates =
 
                                 }
 
-                                extraData =
-                                    apires.result.input.substring(2,
-                                        apires.result.input.length)
+                                extraData = apires.result.input.substring(2, apires.result.input.length)
 
                                 // apires = JSON.stringify(apires.result.input)
 
                                 tbl = {}
 
-                                tbl["30"] =
-                                    "0"
+                                tbl["30"] = "0"
 
-                                tbl["31"] =
-                                    "1"
+                                tbl["31"] = "1"
 
-                                tbl["32"] =
-                                    "2"
+                                tbl["32"] = "2"
 
-                                tbl["33"] =
-                                    "3"
+                                tbl["33"] = "3"
 
-                                tbl["34"] =
-                                    "4"
+                                tbl["34"] = "4"
 
-                                tbl["35"] =
-                                    "5"
+                                tbl["35"] = "5"
 
-                                tbl["36"] =
-                                    "6"
+                                tbl["36"] = "6"
 
-                                tbl["37"] =
-                                    "7"
+                                tbl["37"] = "7"
 
-                                tbl["38"] =
-                                    "8"
+                                tbl["38"] = "8"
 
-                                tbl["39"] =
-                                    "9"
+                                tbl["39"] = "9"
 
-                                tbl["61"] =
-                                    "a"
+                                tbl["61"] = "a"
 
-                                tbl["62"] =
-                                    "b"
+                                tbl["62"] = "b"
 
-                                tbl["63"] =
-                                    "c"
+                                tbl["63"] = "c"
 
-                                tbl["64"] =
-                                    "d"
+                                tbl["64"] = "d"
 
-                                tbl["65"] =
-                                    "e"
+                                tbl["65"] = "e"
 
-                                tbl["66"] =
-                                    "f"
+                                tbl["66"] = "f"
 
-                                hexStr =
-                                    ""
+                                hexStr = ""
 
                                 extraData.match(/..?/g).map(value =>
                                     hexStr += tbl[value])
 
                                 console.log(hexStr)
 
-                                root =
-                                    hexStr
+                                root = hexStr
 
-                                proof =
-                                    JSON.parse(proof)
+                                proof = JSON.parse(proof)
 
                                 // console.log(proof)
 
-                                var
-                                    bufArr = []
+                                var bufArr = []
 
-                                for (var
-                                        key in proof) {
+                                for (var key in proof) {
 
                                     console.log("iteration")
 
@@ -804,14 +739,9 @@ module.exports.IssueCertificates =
 
                                 // root = "e9e656451007174ea2b2c472bfb9ae9c833cd16bf5d3c2a677aed05d160dbcd0"
 
-                                console.log(bufArr.map(x =>
-                                    x && x.toString('hex')))
+                                console.log(bufArr.map(x => x && x.toString('hex')))
 
-                                resBool =
-                                    merkleProof.verify(bufArr,
-                                        new Buffer(hash,
-                                            'hex'), new Buffer(root,
-                                            'hex'), sha256)
+                                resBool = merkleProof.verify(bufArr, new Buffer(hash, 'hex'), new Buffer(root, 'hex'), sha256)
 
                                 console.log(resBool)
 
