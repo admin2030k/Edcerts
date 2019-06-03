@@ -2,8 +2,8 @@
 
 </head>
 
-<body>
-    <% include /partials/navbar %>
+<body class="bodys">
+    <!--<% include /partials/navbar %>-->
     
     <br><br>
     <div class="center">
@@ -14,16 +14,15 @@
     </div>
     <br>
 
-    <div id="A4Layout">
+    <div id="A4Layout-small" class="center">
         <img src="/images/logo.png" id="logo" alt="">
-        <div id="Fields">
-            <h1>
+        <div id="Fields" class="center">
+            <h4 class="center">
             It is to certify that
-            <h3 class="center"> 
                 <%= res2.Recepient %>
-            </h3>
+           
             has successfully completed  <%= res2.Program %> from <%= res2.Institution%> 
-        </h1>
+            </h4>
         </div>
     </div>
 
