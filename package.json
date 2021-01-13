@@ -32,7 +32,7 @@
     "http-errors": "~1.6.2",
     "https": "^1.0.0",
     "jquery": "^3.4.0",
-    "jquery-validation": "^1.19.0",
+    "jquery-validation": "^1.19.3",
     "merkletreejs": "0.0.22",
     "mongod": "^2.0.0",
     "mongoose": "^5.4.19",
